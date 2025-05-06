@@ -1,4 +1,4 @@
-import { ThemeModeToggle } from "@/components/theme-mode-toggle";
+import { ThemeModeToggle } from "@/components/theme/theme-mode-toggle";
 import { Button } from "@/components/ui/button";
 import {
   Card,

@@ -23,8 +23,9 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-import { ThemeModeToggle } from "../theme-mode-toggle";
+import { ThemeModeToggle } from "../theme/theme-mode-toggle";
 import { NavbarItem } from "./navbar-item";
+import { Logo } from "../logo";
 
 export default function Navbar() {
   const pathname = usePathname();
@@ -46,11 +47,8 @@ export default function Navbar() {
 
   return (
     <nav className="sticky top-0 z-30 border-b bg-card/95 backdrop-blur-sm">
-      <div className="mx-auto flex h-16 items-center justify-between px-4 md:px-6">
-        <Link href="/" className="flex items-center gap-2">
-          <Lightbulb className="h-6 w-6" />
-          <span className="text-xl font-bold">IdeaShare</span>
-        </Link>
+      <div className="container mx-auto flex h-16 items-center justify-between px-4 md:px-6">
+        <Logo />
         <div className="flex items-center gap-3 md:gap-5">
           <NavbarItem
             href="/"
