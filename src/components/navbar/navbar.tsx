@@ -45,7 +45,7 @@ export default function Navbar() {
   const isAdmin = true;
 
   return (
-    <nav className="sticky top-0 z-30 border-b bg-background/95 backdrop-blur-sm">
+    <nav className="sticky top-0 z-30 border-b bg-card/95 backdrop-blur-sm">
       <div className="mx-auto flex h-16 items-center justify-between px-4 md:px-6">
         <Link href="/" className="flex items-center gap-2">
           <Lightbulb className="h-6 w-6" />
