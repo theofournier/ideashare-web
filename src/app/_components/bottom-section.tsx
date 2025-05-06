@@ -23,7 +23,6 @@ export const BottomSection = () => {
               className={buttonVariants({
                 variant: "outline",
                 size: "lg",
-                className: "bg-primary",
               })}
             >
               Browse Ideas
