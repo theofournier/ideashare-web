@@ -1,6 +1,8 @@
 import Link from "next/link";
-import { Lightbulb, Github, Twitter, Linkedin, Instagram } from "lucide-react";
+import { Github, Linkedin, Instagram } from "lucide-react";
 import { Logo } from "../logo";
+import { Input } from "../ui/input";
+import { Button } from "../ui/button";
 
 export function Footer() {
   return (
@@ -115,19 +117,11 @@ export function Footer() {
             <p className="mt-4 text-sm text-muted-foreground">
               Subscribe to our newsletter for updates
             </p>
-            <form className="mt-2 flex">
-              <input
-                type="email"
-                placeholder="Enter your email"
-                className="w-full rounded-l-md border border-input bg-background px-3 py-2 text-sm"
-                required
-              />
-              <button
-                type="submit"
-                className="rounded-r-md bg-primary px-3 py-2 text-sm font-medium text-primary-foreground"
-              >
-                Subscribe
-              </button>
+            <form className="mt-2">
+              <div className="flex w-full max-w-sm items-center">
+                <Input type="email" placeholder="Enter your email" className="rounded-r-none"/>
+                <Button type="submit" className="rounded-l-none">Subscribe</Button>
+              </div>
             </form>
           </div>
         </div>

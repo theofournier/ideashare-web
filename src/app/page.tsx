@@ -1,29 +1,23 @@
-import { ThemeModeToggle } from "@/components/theme/theme-mode-toggle";
-import { Button } from "@/components/ui/button";
-import {
-  Card,
-  CardContent,
-  CardFooter,
-  CardHeader,
-  CardTitle,
-} from "@/components/ui/card";
+"use client";
 
-export default function Home() {
+import { HeroSection } from "./_components/hero-section";
+import { HowSection } from "./_components/how-section";
+import { BottomSection } from "./_components/bottom-section";
+import { CategoriesSection } from "./_components/categories-section";
+import { TrendingSection } from "./_components/trending-section";
+
+export default function HomePage() {
   return (
-    <div className="items-center justify-items-center p-8 pb-20 gap-16 sm:p-20 font-[family-name:var(--font-geist-sans)]">
-      <main className="flex flex-col gap-8 row-start-2 items-center sm:items-start">
-        <Card>
-          <CardHeader>
-            <CardTitle>IdeaShare</CardTitle>
-          </CardHeader>
-          <CardContent>
-            <ThemeModeToggle />
-          </CardContent>
-          <CardFooter>
-            <Button>Shadcn button</Button>
-          </CardFooter>
-        </Card>
-      </main>
+    <div className="flex flex-col">
+      <HeroSection />
+
+      <TrendingSection />
+
+      <CategoriesSection />
+
+      <HowSection />
+
+      <BottomSection />
     </div>
   );
 }
