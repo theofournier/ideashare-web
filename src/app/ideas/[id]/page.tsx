@@ -147,14 +147,16 @@ export default function IdeaDetailPage() {
             <ReactMarkdown
               remarkPlugins={[remarkGfm]}
               components={{
-                code({ node, inline, className, children, ...props }) {
+                code(props) {
+                  const { children, className, node, ref, style, ...rest } =
+                    props;
                   const match = /language-(\w+)/.exec(className || "");
-                  return !inline && match ? (
+                  return match ? (
                     <SyntaxHighlighter
                       style={vscDarkPlus}
                       language={match[1]}
                       PreTag="div"
-                      {...props}
+                      {...rest}
                     >
                       {String(children).replace(/\n$/, "")}
                     </SyntaxHighlighter>

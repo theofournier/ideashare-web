@@ -8,10 +8,7 @@ interface SimilarIdeasProps {
   similarIdeas: Idea[];
 }
 
-export function SimilarIdeas({
-  currentIdeaId,
-  similarIdeas,
-}: SimilarIdeasProps) {
+export function SimilarIdeas({ similarIdeas }: SimilarIdeasProps) {
   if (similarIdeas.length === 0) {
     return null;
   }

@@ -60,8 +60,8 @@ export default function ContactPage() {
             Contact Us
           </h1>
           <p className="mt-4 text-muted-foreground">
-            Have questions or feedback? We'd love to hear from you. Fill out the
-            form below and we'll get back to you as soon as possible.
+            Have questions or feedback? We would love to hear from you. Fill out the
+            form below and we will get back to you as soon as possible.
           </p>
         </div>
 
@@ -69,7 +69,7 @@ export default function ContactPage() {
           <CardHeader>
             <CardTitle>Send us a message</CardTitle>
             <CardDescription>
-              Fill out the form below and we'll get back to you as soon as
+              Fill out the form below and we will get back to you as soon as
               possible.
             </CardDescription>
           </CardHeader>

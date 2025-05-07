@@ -39,11 +39,11 @@ import { reports, type Report } from "@/lib/admin-data";
 import { getUserById, getIdeaById } from "@/lib/mock-data";
 import { toast } from "sonner";
 
+type StatusFilter = "all" | "pending" | "reviewed" | "dismissed";
+
 export default function ReportsManagement() {
   const [allReports, setAllReports] = useState<Report[]>(reports);
-  const [statusFilter, setStatusFilter] = useState<
-    "all" | "pending" | "reviewed" | "dismissed"
-  >("all");
+  const [statusFilter, setStatusFilter] = useState<StatusFilter>("all");
   const [selectedReport, setSelectedReport] = useState<Report | null>(null);
   const [isViewDialogOpen, setIsViewDialogOpen] = useState(false);
   const [isActionDialogOpen, setIsActionDialogOpen] = useState(false);
@@ -184,7 +184,7 @@ export default function ReportsManagement() {
       <div className="flex items-center justify-between">
         <Select
           value={statusFilter}
-          onValueChange={(value) => setStatusFilter(value as any)}
+          onValueChange={(value: StatusFilter) => setStatusFilter(value)}
         >
           <SelectTrigger className="w-[180px]">
             <SelectValue placeholder="Filter by status" />

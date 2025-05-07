@@ -26,14 +26,7 @@ import {
   DialogTitle,
 } from "@/components/ui/dialog";
 import { Badge } from "@/components/ui/badge";
-import {
-  MoreHorizontal,
-  Search,
-  User,
-  Trash,
-  Ban,
-  CheckCircle,
-} from "lucide-react";
+import { MoreHorizontal, Search, Trash, Ban, CheckCircle } from "lucide-react";
 import {
   extendedUsers,
   type ExtendedUser,

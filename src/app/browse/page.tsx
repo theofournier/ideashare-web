@@ -32,7 +32,6 @@ export default function BrowsePage() {
   );
   const [paginatedIdeas, setPaginatedIdeas] = useState<typeof ideas>([]);
   const [sidebarCollapsed, setSidebarCollapsed] = useState(false);
-  const [isMobile, setIsMobile] = useState(false);
   // Add a new state for sorting at the top of the component, after the existing state declarations
   const [sortBy, setSortBy] = useState<
     "newest" | "oldest" | "most-upvoted" | "title-asc" | "title-desc"
@@ -47,7 +46,6 @@ export default function BrowsePage() {
   // Check if we're on mobile
   useEffect(() => {
     const checkIfMobile = () => {
-      setIsMobile(window.innerWidth < 1024);
       if (window.innerWidth < 1024) {
         setSidebarCollapsed(true);
       }
@@ -88,6 +86,11 @@ export default function BrowsePage() {
         !techStack ||
         techStack.length === 0 ||
         techStack.some((tech) => idea.techStack.includes(tech));
+
+      setSearch(search);
+      setDifficulty(difficulty);
+      setSelectedTags(tags);
+      setSelectedTech(techStack || []);
 
       return (
         matchesSearch && matchesDifficulty && matchesTags && matchesTechStack

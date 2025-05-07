@@ -7,7 +7,6 @@ import {
   UserCircle,
   PlusCircle,
   Home,
-  Lightbulb,
   LogIn,
   LogOut,
   Settings,

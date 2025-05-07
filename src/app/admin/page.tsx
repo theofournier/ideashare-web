@@ -10,8 +10,6 @@ export default function AdminDashboard() {
   const totalIdeas = ideas.length;
   const totalUsers = users.length;
   const totalVotes = ideas.reduce((sum, idea) => sum + idea.upvotes, 0);
-  const averageVotesPerIdea =
-    totalIdeas > 0 ? Math.round(totalVotes / totalIdeas) : 0;
   const pendingReports = reports.filter(
     (report) => report.status === "pending"
   ).length;

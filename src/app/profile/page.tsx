@@ -53,7 +53,7 @@ export default function ProfilePage() {
           ) : (
             <div className="py-12 text-center">
               <h3 className="text-xl font-medium">
-                You haven't submitted any ideas yet
+                You have not submitted any ideas yet
               </h3>
               <p className="mt-2 text-muted-foreground">
                 Share your first idea with the community
@@ -77,7 +77,7 @@ export default function ProfilePage() {
           ) : (
             <div className="py-12 text-center">
               <h3 className="text-xl font-medium">
-                You haven't upvoted any ideas yet
+                You have not upvoted any ideas yet
               </h3>
               <p className="mt-2 text-muted-foreground">
                 Browse ideas and upvote the ones you like

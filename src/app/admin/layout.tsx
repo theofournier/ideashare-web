@@ -5,7 +5,6 @@ import {
   LayoutDashboard,
   Users,
   Lightbulb,
-  Settings,
   LogOut,
   Flag,
   Tag,

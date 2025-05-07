@@ -19,7 +19,13 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { getIdeaById, tags, currentUser, getUserById } from "@/lib/mock-data";
+import {
+  getIdeaById,
+  tags,
+  currentUser,
+  getUserById,
+  Idea,
+} from "@/lib/mock-data";
 import { MultiSelect } from "@/components/ui/multi-select";
 
 // Simple markdown preview component
@@ -60,7 +66,7 @@ const techStackOptions = [
 export default function EditIdeaPage() {
   const router = useRouter();
   const [isLoading, setIsLoading] = useState(false);
-  const [idea, setIdea] = useState<any>(null);
+  const [idea, setIdea] = useState<Idea | null>(null);
   const [formData, setFormData] = useState({
     title: "",
     shortDescription: "",
@@ -104,7 +110,7 @@ export default function EditIdeaPage() {
         techStack: fetchedIdea.techStack,
       });
     }
-  }, [id, router, toast]);
+  }, [id, router]);
 
   const handleInputChange = (
     e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
@@ -136,9 +142,9 @@ export default function EditIdeaPage() {
 
       // Redirect to the idea detail page
       router.push(`/ideas/${id}`);
-    } catch (error) {
+    } catch (e) {
       toast.error("Error", {
-        description: "Failed to update idea. Please try again.",
+        description: `Failed to update idea. Please try again. ${e}`,
       });
     } finally {
       setIsLoading(false);
@@ -228,22 +234,24 @@ export default function EditIdeaPage() {
                       <ReactMarkdown
                         remarkPlugins={[remarkGfm]}
                         components={{
-                          code({
-                            node,
-                            inline,
-                            className,
-                            children,
-                            ...props
-                          }) {
+                          code(props) {
+                            const {
+                              children,
+                              className,
+                              node,
+                              ref,
+                              style,
+                              ...rest
+                            } = props;
                             const match = /language-(\w+)/.exec(
                               className || ""
                             );
-                            return !inline && match ? (
+                            return match ? (
                               <SyntaxHighlighter
                                 style={vscDarkPlus}
                                 language={match[1]}
                                 PreTag="div"
-                                {...props}
+                                {...rest}
                               >
                                 {String(children).replace(/\n$/, "")}
                               </SyntaxHighlighter>
