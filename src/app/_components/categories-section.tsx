@@ -110,7 +110,7 @@ export const CategoriesSection = () => {
                   >
                     <CardContent className="p-4 flex-grow">
                       {/* Title and description at the top */}
-                      <Link href={`/idea/${idea.id}`}>
+                      <Link href={`/ideas/${idea.id}`}>
                         <h3 className="mb-1 text-sm font-bold line-clamp-2 hover:text-primary">
                           {idea.title}
                         </h3>

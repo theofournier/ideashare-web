@@ -22,7 +22,7 @@ export function IdeaCard({ idea, isUpvoted = false, onUpvote }: IdeaCardProps) {
     <Card className="h-full overflow-hidden transition-all hover:shadow-lg card-enhanced flex flex-col">
       <CardContent className="p-4 flex-grow">
         {/* Title and description at the top */}
-        <Link href={`/idea/${idea.id}`}>
+        <Link href={`/ideas/${idea.id}`}>
           <h3 className="mb-2 text-xl font-bold hover:text-primary">
             {idea.title}
           </h3>
