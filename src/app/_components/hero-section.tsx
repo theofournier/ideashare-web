@@ -24,7 +24,7 @@ export const HeroSection = () => {
                 <ArrowRight />
               </Link>
               <Link
-                href="/submit"
+                href="/ideas/submit"
                 className={buttonVariants({ size: "lg", variant: "outline" })}
               >
                 Submit Your Idea

@@ -32,7 +32,7 @@ export function Footer() {
               </li>
               <li>
                 <Link
-                  href="/submit"
+                  href="/ideas/submit"
                   className="text-sm text-muted-foreground hover:text-foreground"
                 >
                   Submit Idea

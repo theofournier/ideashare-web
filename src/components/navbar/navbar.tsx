@@ -66,7 +66,7 @@ export default function Navbar() {
           {isLoggedIn ? (
             <>
               <NavbarItem
-                href="/submit"
+                href="/ideas/submit"
                 currentPathname={pathname}
                 text="Submit Idea"
                 Icon={PlusCircle}
