@@ -1,23 +1,35 @@
-"use client"
+"use client";
 
-import type React from "react"
+import type React from "react";
 
-import { useState } from "react"
-import { useRouter } from "next/navigation"
-import { Button } from "@/components/ui/button"
-import { Input } from "@/components/ui/input"
-import { Textarea } from "@/components/ui/textarea"
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
-import { Label } from "@/components/ui/label"
-import { tags, type Difficulty } from "@/lib/mock-data"
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
-import { Eye, Edit } from "lucide-react"
-import { Combobox, type ComboboxOption } from "@/components/ui/combobox"
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
-import ReactMarkdown from "react-markdown"
-import remarkGfm from "remark-gfm"
-import { Prism as SyntaxHighlighter } from "react-syntax-highlighter"
-import { vscDarkPlus } from "react-syntax-highlighter/dist/cjs/styles/prism"
+import { useState } from "react";
+import { useRouter } from "next/navigation";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { Textarea } from "@/components/ui/textarea";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
+import { Label } from "@/components/ui/label";
+import { tags, type Difficulty } from "@/lib/mock-data";
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card";
+import { Eye, Edit } from "lucide-react";
+import { Combobox, type ComboboxOption } from "@/components/ui/combobox";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import ReactMarkdown from "react-markdown";
+import remarkGfm from "remark-gfm";
+import { Prism as SyntaxHighlighter } from "react-syntax-highlighter";
+import { vscDarkPlus } from "react-syntax-highlighter/dist/cjs/styles/prism";
 
 // Mock tech stacks data
 const techStackOptions = [
@@ -36,7 +48,7 @@ const techStackOptions = [
   { value: "AWS", label: "AWS" },
   { value: "Docker", label: "Docker" },
   { value: "Kubernetes", label: "Kubernetes" },
-]
+];
 
 const markdownExample = `# Project Title
 
@@ -60,67 +72,71 @@ function example() {
 
 ## Challenges
 Some potential challenges include...
-`
+`;
 
 export default function SubmitIdeaPage() {
-  const router = useRouter()
+  const router = useRouter();
 
-  const [title, setTitle] = useState("")
-  const [shortDescription, setShortDescription] = useState("")
-  const [fullDescription, setFullDescription] = useState("")
-  const [difficulty, setDifficulty] = useState<Difficulty>("Beginner")
-  const [selectedTags, setSelectedTags] = useState<string[]>([])
-  const [techStack, setTechStack] = useState<string[]>([])
-  const [isSubmitting, setIsSubmitting] = useState(false)
-  const [activeTab, setActiveTab] = useState("edit")
+  const [title, setTitle] = useState("");
+  const [shortDescription, setShortDescription] = useState("");
+  const [fullDescription, setFullDescription] = useState("");
+  const [difficulty, setDifficulty] = useState<Difficulty>("Beginner");
+  const [selectedTags, setSelectedTags] = useState<string[]>([]);
+  const [techStack, setTechStack] = useState<string[]>([]);
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const [activeTab, setActiveTab] = useState("edit");
 
   // Convert tags to combobox options
   const tagOptions: ComboboxOption[] = tags.map((tag) => ({
     value: tag.id,
     label: tag.name,
     color: tag.color,
-  }))
+  }));
 
   const handleTagSelect = (tagId: string) => {
-    setSelectedTags([...selectedTags, tagId])
-  }
+    setSelectedTags([...selectedTags, tagId]);
+  };
 
   const handleTagRemove = (tagId: string) => {
-    setSelectedTags(selectedTags.filter((id) => id !== tagId))
-  }
+    setSelectedTags(selectedTags.filter((id) => id !== tagId));
+  };
 
   const handleTechStackSelect = (tech: string) => {
-    setTechStack([...techStack, tech])
-  }
+    setTechStack([...techStack, tech]);
+  };
 
   const handleTechStackRemove = (tech: string) => {
-    setTechStack(techStack.filter((t) => t !== tech))
-  }
+    setTechStack(techStack.filter((t) => t !== tech));
+  };
 
   const handleSubmit = (e: React.FormEvent) => {
-    e.preventDefault()
-    setIsSubmitting(true)
+    e.preventDefault();
+    setIsSubmitting(true);
 
     // Simulate form submission with mock data
     setTimeout(() => {
-      setIsSubmitting(false)
-      router.push("/browse")
-    }, 1500)
-  }
+      setIsSubmitting(false);
+      router.push("/browse");
+    }, 1500);
+  };
 
   return (
     <div className="container mx-auto px-4 py-8">
       <div className="mx-auto max-w-3xl">
         <div className="mb-6">
           <h1 className="text-3xl font-bold">Submit a New Idea</h1>
-          <p className="text-muted-foreground">Share your tech project idea with the community</p>
+          <p className="text-muted-foreground">
+            Share your tech project idea with the community
+          </p>
         </div>
 
         <form onSubmit={handleSubmit} className="space-y-8">
           <Card>
             <CardHeader>
               <CardTitle>Basic Information</CardTitle>
-              <CardDescription>Provide the core details about your project idea</CardDescription>
+              <CardDescription>
+                Provide the core details about your project idea
+              </CardDescription>
             </CardHeader>
             <CardContent className="space-y-4">
               <div className="space-y-2">
@@ -148,13 +164,23 @@ export default function SubmitIdeaPage() {
               <div className="space-y-2">
                 <Label htmlFor="fullDescription">Full Description</Label>
                 <div className="rounded-md border">
-                  <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
+                  <Tabs
+                    value={activeTab}
+                    onValueChange={setActiveTab}
+                    className="w-full"
+                  >
                     <TabsList className="grid w-full grid-cols-2">
-                      <TabsTrigger value="edit" className="flex items-center gap-2">
+                      <TabsTrigger
+                        value="edit"
+                        className="flex items-center gap-2"
+                      >
                         <Edit className="h-4 w-4" />
                         Edit
                       </TabsTrigger>
-                      <TabsTrigger value="preview" className="flex items-center gap-2">
+                      <TabsTrigger
+                        value="preview"
+                        className="flex items-center gap-2"
+                      >
                         <Eye className="h-4 w-4" />
                         Preview
                       </TabsTrigger>
@@ -172,12 +198,24 @@ export default function SubmitIdeaPage() {
                         <div className="text-sm text-muted-foreground">
                           <p className="mb-1">Markdown supported:</p>
                           <div className="flex flex-wrap gap-2">
-                            <code className="rounded bg-muted px-1 py-0.5"># Heading</code>
-                            <code className="rounded bg-muted px-1 py-0.5">**Bold**</code>
-                            <code className="rounded bg-muted px-1 py-0.5">*Italic*</code>
-                            <code className="rounded bg-muted px-1 py-0.5">[Link](url)</code>
-                            <code className="rounded bg-muted px-1 py-0.5">- List item</code>
-                            <code className="rounded bg-muted px-1 py-0.5">\`\`\`code\`\`\`</code>
+                            <code className="rounded bg-muted px-1 py-0.5">
+                              # Heading
+                            </code>
+                            <code className="rounded bg-muted px-1 py-0.5">
+                              **Bold**
+                            </code>
+                            <code className="rounded bg-muted px-1 py-0.5">
+                              *Italic*
+                            </code>
+                            <code className="rounded bg-muted px-1 py-0.5">
+                              [Link](url)
+                            </code>
+                            <code className="rounded bg-muted px-1 py-0.5">
+                              - List item
+                            </code>
+                            <code className="rounded bg-muted px-1 py-0.5">
+                              \`\`\`code\`\`\`
+                            </code>
                           </div>
                           <Button
                             type="button"
@@ -197,17 +235,30 @@ export default function SubmitIdeaPage() {
                           <ReactMarkdown
                             remarkPlugins={[remarkGfm]}
                             components={{
-                              code({ node, inline, className, children, ...props }) {
-                                const match = /language-(\w+)/.exec(className || "")
+                              code({
+                                node,
+                                inline,
+                                className,
+                                children,
+                                ...props
+                              }) {
+                                const match = /language-(\w+)/.exec(
+                                  className || ""
+                                );
                                 return !inline && match ? (
-                                  <SyntaxHighlighter style={vscDarkPlus} language={match[1]} PreTag="div" {...props}>
+                                  <SyntaxHighlighter
+                                    style={vscDarkPlus}
+                                    language={match[1]}
+                                    PreTag="div"
+                                    {...props}
+                                  >
                                     {String(children).replace(/\n$/, "")}
                                   </SyntaxHighlighter>
                                 ) : (
                                   <code className={className} {...props}>
                                     {children}
                                   </code>
-                                )
+                                );
                               },
                             }}
                           >
@@ -229,12 +280,17 @@ export default function SubmitIdeaPage() {
           <Card>
             <CardHeader>
               <CardTitle>Project Details</CardTitle>
-              <CardDescription>Categorize and provide technical details</CardDescription>
+              <CardDescription>
+                Categorize and provide technical details
+              </CardDescription>
             </CardHeader>
             <CardContent className="space-y-6">
               <div className="space-y-2">
                 <Label htmlFor="difficulty">Difficulty Level</Label>
-                <Select value={difficulty} onValueChange={(value) => setDifficulty(value as Difficulty)}>
+                <Select
+                  value={difficulty}
+                  onValueChange={(value) => setDifficulty(value as Difficulty)}
+                >
                   <SelectTrigger id="difficulty">
                     <SelectValue placeholder="Select difficulty" />
                   </SelectTrigger>
@@ -275,7 +331,11 @@ export default function SubmitIdeaPage() {
           </Card>
 
           <div className="flex justify-end gap-4">
-            <Button type="button" variant="outline" onClick={() => router.push("/browse")}>
+            <Button
+              type="button"
+              variant="outline"
+              onClick={() => router.push("/browse")}
+            >
               Cancel
             </Button>
             <Button type="submit" disabled={isSubmitting}>
@@ -285,5 +345,5 @@ export default function SubmitIdeaPage() {
         </form>
       </div>
     </div>
-  )
+  );
 }
