@@ -25,6 +25,7 @@ import {
 import { ThemeModeToggle } from "../theme/theme-mode-toggle";
 import { NavbarItem } from "./navbar-item";
 import { Logo } from "../logo";
+import { LogoutForm } from "./logout-form";
 
 export default function Navbar() {
   const pathname = usePathname();
@@ -101,13 +102,7 @@ export default function Navbar() {
                   )}
 
                   <DropdownMenuSeparator />
-                  <DropdownMenuItem
-                    onClick={handleLogout}
-                    variant="destructive"
-                  >
-                    <LogOut />
-                    Logout
-                  </DropdownMenuItem>
+                  <LogoutForm />
                 </DropdownMenuContent>
               </DropdownMenu>
             </>
