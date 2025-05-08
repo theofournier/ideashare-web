@@ -1,20 +1,6 @@
-"use client";
-
 import Link from "next/link";
-import { usePathname, useRouter } from "next/navigation";
 import { Button } from "@/components/ui/button";
-import {
-  UserCircle,
-  PlusCircle,
-  Home,
-  LogIn,
-  LogOut,
-  Settings,
-  Search,
-  CircleUserRound,
-} from "lucide-react";
-import { useState, useEffect } from "react";
-import { currentUser } from "@/lib/mock-data";
+import { CircleUserRound, Home, LogIn, PlusCircle, Search } from "lucide-react";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -26,21 +12,11 @@ import { ThemeModeToggle } from "../theme/theme-mode-toggle";
 import { NavbarItem } from "./navbar-item";
 import { Logo } from "../logo";
 import { LogoutForm } from "./logout-form";
+import { getCurrentUser } from "@/lib/supabase/queries/auth/getCurrentUser";
 
-export default function Navbar() {
-  const pathname = usePathname();
-  const router = useRouter();
-  const [isLoggedIn, setIsLoggedIn] = useState(false);
-
-  // Mock authentication check
-  useEffect(() => {
-    setIsLoggedIn(true);
-  }, []);
-
-  const handleLogout = () => {
-    setIsLoggedIn(false);
-    router.push("/login");
-  };
+export default async function Navbar() {
+  const currentUser = await getCurrentUser();
+  const isLoggedIn = !!currentUser;
 
   // Mock admin check
   const isAdmin = true;
@@ -50,53 +26,38 @@ export default function Navbar() {
       <div className="container mx-auto flex h-16 items-center justify-between px-4 md:px-6">
         <Logo />
         <div className="flex items-center gap-3 md:gap-5">
-          <NavbarItem
-            href="/"
-            currentPathname={pathname}
-            text="Home"
-            Icon={Home}
-          />
-          <NavbarItem
-            href="/browse"
-            currentPathname={pathname}
-            text="Browse"
-            Icon={Search}
-          />
+          <NavbarItem href="/">
+            <Home />
+            Home
+          </NavbarItem>
+          <NavbarItem href="/browse">
+            <Search /> Browse
+          </NavbarItem>
 
           {isLoggedIn ? (
             <>
-              <NavbarItem
-                href="/ideas/submit"
-                currentPathname={pathname}
-                text="Submit Idea"
-                Icon={PlusCircle}
-              />
+              <NavbarItem href="/ideas/submit">
+                <PlusCircle />
+                Submit Idea
+              </NavbarItem>
 
               <DropdownMenu>
                 <DropdownMenuTrigger asChild>
-                  <Button
-                    variant={pathname === "/profile" ? "default" : "ghost"}
-                  >
+                  <Button variant="ghost">
                     <CircleUserRound />
-                    {currentUser.name}
+                    {currentUser.username || currentUser.email}
                   </Button>
                 </DropdownMenuTrigger>
                 <DropdownMenuContent align="end">
                   <Link href="/profile">
-                    <DropdownMenuItem>
-                      <UserCircle />
-                      Profile
-                    </DropdownMenuItem>
+                    <DropdownMenuItem>Profile</DropdownMenuItem>
                   </Link>
 
                   {isAdmin && (
                     <>
                       <DropdownMenuSeparator />
                       <Link href="/admin">
-                        <DropdownMenuItem>
-                          <Settings />
-                          Admin Panel
-                        </DropdownMenuItem>
+                        <DropdownMenuItem>Admin Panel</DropdownMenuItem>
                       </Link>
                     </>
                   )}
@@ -107,12 +68,9 @@ export default function Navbar() {
               </DropdownMenu>
             </>
           ) : (
-            <NavbarItem
-              href="/login"
-              currentPathname={pathname}
-              text="Login"
-              Icon={LogIn}
-            />
+            <NavbarItem href="/login">
+              <LogIn /> Login
+            </NavbarItem>
           )}
 
           <ThemeModeToggle />

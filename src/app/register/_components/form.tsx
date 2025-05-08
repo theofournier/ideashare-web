@@ -1,7 +1,6 @@
 "use client";
 
 import { useActionState } from "react";
-import { register } from "./actions";
 import {
   Card,
   CardContent,
@@ -16,9 +15,10 @@ import { Label } from "@/components/ui/label";
 import { Input } from "@/components/ui/input";
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
+import { registerAction } from "@/lib/supabase/actions/auth/register-action";
 
 export const RegisterForm = () => {
-  const [state, formAction, isPending] = useActionState(register, {
+  const [state, formAction, isPending] = useActionState(registerAction, {
     errorMessage: "",
   });
 
@@ -40,7 +40,7 @@ export const RegisterForm = () => {
           )}
 
           <div className="space-y-2">
-            <Label htmlFor="name">Full Name</Label>
+            <Label htmlFor="name">Username</Label>
             <Input
               id="name"
               name="name"
@@ -72,7 +72,7 @@ export const RegisterForm = () => {
               disabled={isPending}
             />
             <p className="text-xs text-muted-foreground">
-              Password must be at least 8 characters long
+              Password must be at least 6 characters long
             </p>
           </div>
         </CardContent>

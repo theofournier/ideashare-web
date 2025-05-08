@@ -1,24 +1,24 @@
+"use client";
+
 import Link from "next/link";
 import { buttonVariants } from "../ui/button";
-import { ElementType } from "react";
+import { usePathname } from "next/navigation";
+import { PropsWithChildren } from "react";
 
-type Props = {
+type Props = PropsWithChildren<{
   href: string;
-  currentPathname: string;
-  text: string;
-  Icon: ElementType;
-};
+}>;
 
-export const NavbarItem = ({ href, currentPathname, text, Icon }: Props) => {
+export const NavbarItem = ({ href, children }: Props) => {
+  const pathname = usePathname();
   return (
     <Link
       href={href}
       className={buttonVariants({
-        variant: currentPathname === href ? "default" : "ghost",
+        variant: pathname === href ? "default" : "ghost",
       })}
     >
-      <Icon />
-      {text}
+      {children}
     </Link>
   );
 };

@@ -1,7 +1,6 @@
 "use client";
 
 import { useActionState } from "react";
-import { login } from "./actions";
 import {
   Card,
   CardContent,
@@ -16,9 +15,10 @@ import { Label } from "@/components/ui/label";
 import { Input } from "@/components/ui/input";
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
+import { loginAction } from "@/lib/supabase/actions/auth/login-action";
 
 export const LoginForm = () => {
-  const [state, formAction, isPending] = useActionState(login, {
+  const [state, formAction, isPending] = useActionState(loginAction, {
     errorMessage: "",
   });
 
@@ -52,15 +52,7 @@ export const LoginForm = () => {
           </div>
 
           <div className="space-y-2">
-            <div className="flex items-center justify-between">
-              <Label htmlFor="password">Password</Label>
-              <Link
-                href="/forgot-password"
-                className="text-xs text-primary hover:underline"
-              >
-                Forgot password?
-              </Link>
-            </div>
+            <Label htmlFor="password">Password</Label>
             <Input
               id="password"
               name="password"
@@ -68,10 +60,12 @@ export const LoginForm = () => {
               required
               disabled={isPending}
             />
-            <p className="text-xs text-muted-foreground">
-              For demo purposes, use any email from mock data with password
-              &quot;password&quot;
-            </p>
+            <Link
+              href="/forgot-password"
+              className="text-xs text-primary hover:underline"
+            >
+              Forgot password?
+            </Link>
           </div>
         </CardContent>
 

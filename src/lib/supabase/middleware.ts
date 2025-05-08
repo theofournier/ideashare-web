@@ -1,6 +1,7 @@
 import { createServerClient } from "@supabase/ssr";
 import { NextResponse, type NextRequest } from "next/server";
 import { USE_MOCK_DATA } from "../utils";
+import { Database } from "./database.types";
 
 export async function updateSession(request: NextRequest) {
   let supabaseResponse = NextResponse.next({
@@ -11,7 +12,7 @@ export async function updateSession(request: NextRequest) {
     return supabaseResponse;
   }
 
-  const supabase = createServerClient(
+  const supabase = createServerClient<Database>(
     process.env.NEXT_PUBLIC_SUPABASE_URL!,
     process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!,
     {
@@ -45,7 +46,7 @@ export async function updateSession(request: NextRequest) {
   );
 
   // Protected routes
-  const protectedRoutes = ["/profile", "/submit", "/ideas/*/edit"];
+  const protectedRoutes = ["/profile", "/ideas/submit", "/ideas/*/edit"];
   const isProtectedRoute = protectedRoutes.some((route) => {
     if (route.includes("*")) {
       const routeParts = route.split("*");

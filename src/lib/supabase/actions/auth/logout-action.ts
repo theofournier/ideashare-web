@@ -4,7 +4,7 @@ import { redirect } from "next/navigation";
 import { createClient } from "../../clients/server";
 import { revalidatePath } from "next/cache";
 
-export const logout = async () => {
+export const logoutAction = async () => {
   const supabase = await createClient();
   // Check if a user's logged in
   const {
