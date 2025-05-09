@@ -20,7 +20,7 @@ import type { Tag, Difficulty } from "@/lib/mock-data";
 interface FilterBarProps {
   tags: Tag[];
   techOptions?: string[];
-  onFilterChange: (filters: {
+  onFilterChange?: (filters: {
     search: string;
     difficulty: Difficulty | "All";
     tags: string[];
@@ -51,7 +51,7 @@ export function FilterBar({
 
   const handleSearchChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setSearch(e.target.value);
-    onFilterChange({
+    onFilterChange?.({
       search: e.target.value,
       difficulty,
       tags: selectedTags,
@@ -63,7 +63,7 @@ export function FilterBar({
   const handleDifficultyChange = (value: string) => {
     const newDifficulty = value as Difficulty | "All";
     setDifficulty(newDifficulty);
-    onFilterChange({
+    onFilterChange?.({
       search,
       difficulty: newDifficulty,
       tags: selectedTags,
@@ -75,7 +75,7 @@ export function FilterBar({
   const handleTagSelect = (tagId: string) => {
     const newTags = [...selectedTags, tagId];
     setSelectedTags(newTags);
-    onFilterChange({
+    onFilterChange?.({
       search,
       difficulty,
       tags: newTags,
@@ -87,7 +87,7 @@ export function FilterBar({
   const handleTagRemove = (tagId: string) => {
     const newTags = selectedTags.filter((id) => id !== tagId);
     setSelectedTags(newTags);
-    onFilterChange({
+    onFilterChange?.({
       search,
       difficulty,
       tags: newTags,
@@ -99,7 +99,7 @@ export function FilterBar({
   const handleTechSelect = (tech: string) => {
     const newTech = [...selectedTech, tech];
     setSelectedTech(newTech);
-    onFilterChange({
+    onFilterChange?.({
       search,
       difficulty,
       tags: selectedTags,
@@ -111,7 +111,7 @@ export function FilterBar({
   const handleTechRemove = (tech: string) => {
     const newTech = selectedTech.filter((t) => t !== tech);
     setSelectedTech(newTech);
-    onFilterChange({
+    onFilterChange?.({
       search,
       difficulty,
       tags: selectedTags,
@@ -124,7 +124,7 @@ export function FilterBar({
     setSelectedTags([]);
     setSelectedTech([]);
     setDifficulty("All");
-    onFilterChange({
+    onFilterChange?.({
       search,
       difficulty: "All",
       tags: [],
@@ -160,7 +160,7 @@ export function FilterBar({
     if (onSortChange) {
       onSortChange(newSort);
     } else {
-      onFilterChange({
+      onFilterChange?.({
         search,
         difficulty,
         tags: selectedTags,

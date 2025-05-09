@@ -7,8 +7,277 @@ export type Json =
   | Json[];
 
 export type Database = {
+  graphql_public: {
+    Tables: {
+      [_ in never]: never;
+    };
+    Views: {
+      [_ in never]: never;
+    };
+    Functions: {
+      graphql: {
+        Args: {
+          operationName?: string;
+          query?: string;
+          variables?: Json;
+          extensions?: Json;
+        };
+        Returns: Json;
+      };
+    };
+    Enums: {
+      [_ in never]: never;
+    };
+    CompositeTypes: {
+      [_ in never]: never;
+    };
+  };
   public: {
     Tables: {
+      idea_activities: {
+        Row: {
+          idea_id: string;
+          view_count: number;
+          vote_count: number;
+        };
+        Insert: {
+          idea_id: string;
+          view_count?: number;
+          vote_count?: number;
+        };
+        Update: {
+          idea_id?: string;
+          view_count?: number;
+          vote_count?: number;
+        };
+        Relationships: [
+          {
+            foreignKeyName: "idea_activities_idea_id_fkey";
+            columns: ["idea_id"];
+            isOneToOne: true;
+            referencedRelation: "ideas";
+            referencedColumns: ["id"];
+          }
+        ];
+      };
+      idea_reports: {
+        Row: {
+          created_at: string;
+          description: string | null;
+          id: string;
+          idea_id: string;
+          reason: Database["public"]["Enums"]["report_reason"];
+          status: Database["public"]["Enums"]["report_status"];
+          updated_at: string;
+          user_id: string;
+        };
+        Insert: {
+          created_at?: string;
+          description?: string | null;
+          id?: string;
+          idea_id: string;
+          reason: Database["public"]["Enums"]["report_reason"];
+          status?: Database["public"]["Enums"]["report_status"];
+          updated_at?: string;
+          user_id: string;
+        };
+        Update: {
+          created_at?: string;
+          description?: string | null;
+          id?: string;
+          idea_id?: string;
+          reason?: Database["public"]["Enums"]["report_reason"];
+          status?: Database["public"]["Enums"]["report_status"];
+          updated_at?: string;
+          user_id?: string;
+        };
+        Relationships: [
+          {
+            foreignKeyName: "idea_reports_idea_id_fkey";
+            columns: ["idea_id"];
+            isOneToOne: false;
+            referencedRelation: "ideas";
+            referencedColumns: ["id"];
+          },
+          {
+            foreignKeyName: "idea_reports_user_id_fkey1";
+            columns: ["user_id"];
+            isOneToOne: false;
+            referencedRelation: "profiles";
+            referencedColumns: ["id"];
+          }
+        ];
+      };
+      idea_tags: {
+        Row: {
+          idea_id: string;
+          tag_id: number;
+        };
+        Insert: {
+          idea_id: string;
+          tag_id: number;
+        };
+        Update: {
+          idea_id?: string;
+          tag_id?: number;
+        };
+        Relationships: [
+          {
+            foreignKeyName: "idea_tags_idea_id_fkey";
+            columns: ["idea_id"];
+            isOneToOne: false;
+            referencedRelation: "ideas";
+            referencedColumns: ["id"];
+          },
+          {
+            foreignKeyName: "idea_tags_tag_id_fkey";
+            columns: ["tag_id"];
+            isOneToOne: false;
+            referencedRelation: "tags";
+            referencedColumns: ["id"];
+          }
+        ];
+      };
+      idea_tech_stacks: {
+        Row: {
+          idea_id: string;
+          tech_stack_id: number;
+        };
+        Insert: {
+          idea_id: string;
+          tech_stack_id: number;
+        };
+        Update: {
+          idea_id?: string;
+          tech_stack_id?: number;
+        };
+        Relationships: [
+          {
+            foreignKeyName: "idea_tech_stacks_idea_id_fkey";
+            columns: ["idea_id"];
+            isOneToOne: false;
+            referencedRelation: "ideas";
+            referencedColumns: ["id"];
+          },
+          {
+            foreignKeyName: "idea_tech_stacks_tech_stack_id_fkey";
+            columns: ["tech_stack_id"];
+            isOneToOne: false;
+            referencedRelation: "tech_stacks";
+            referencedColumns: ["id"];
+          }
+        ];
+      };
+      idea_views: {
+        Row: {
+          created_at: string;
+          idea_id: string;
+          user_id: string;
+        };
+        Insert: {
+          created_at?: string;
+          idea_id: string;
+          user_id: string;
+        };
+        Update: {
+          created_at?: string;
+          idea_id?: string;
+          user_id?: string;
+        };
+        Relationships: [
+          {
+            foreignKeyName: "idea_views_idea_id_fkey";
+            columns: ["idea_id"];
+            isOneToOne: false;
+            referencedRelation: "ideas";
+            referencedColumns: ["id"];
+          },
+          {
+            foreignKeyName: "idea_views_user_id_fkey1";
+            columns: ["user_id"];
+            isOneToOne: false;
+            referencedRelation: "profiles";
+            referencedColumns: ["id"];
+          }
+        ];
+      };
+      idea_votes: {
+        Row: {
+          created_at: string;
+          idea_id: string;
+          user_id: string;
+        };
+        Insert: {
+          created_at?: string;
+          idea_id: string;
+          user_id: string;
+        };
+        Update: {
+          created_at?: string;
+          idea_id?: string;
+          user_id?: string;
+        };
+        Relationships: [
+          {
+            foreignKeyName: "idea_votes_idea_id_fkey";
+            columns: ["idea_id"];
+            isOneToOne: false;
+            referencedRelation: "ideas";
+            referencedColumns: ["id"];
+          },
+          {
+            foreignKeyName: "idea_votes_user_id_fkey1";
+            columns: ["user_id"];
+            isOneToOne: false;
+            referencedRelation: "profiles";
+            referencedColumns: ["id"];
+          }
+        ];
+      };
+      ideas: {
+        Row: {
+          created_at: string;
+          difficulty: Database["public"]["Enums"]["idea_difficulty"];
+          full_description: string;
+          id: string;
+          short_description: string;
+          status: Database["public"]["Enums"]["idea_status"];
+          title: string;
+          updated_at: string;
+          user_id: string | null;
+        };
+        Insert: {
+          created_at?: string;
+          difficulty: Database["public"]["Enums"]["idea_difficulty"];
+          full_description: string;
+          id?: string;
+          short_description: string;
+          status?: Database["public"]["Enums"]["idea_status"];
+          title: string;
+          updated_at?: string;
+          user_id?: string | null;
+        };
+        Update: {
+          created_at?: string;
+          difficulty?: Database["public"]["Enums"]["idea_difficulty"];
+          full_description?: string;
+          id?: string;
+          short_description?: string;
+          status?: Database["public"]["Enums"]["idea_status"];
+          title?: string;
+          updated_at?: string;
+          user_id?: string | null;
+        };
+        Relationships: [
+          {
+            foreignKeyName: "ideas_user_id_fkey1";
+            columns: ["user_id"];
+            isOneToOne: false;
+            referencedRelation: "profiles";
+            referencedColumns: ["id"];
+          }
+        ];
+      };
       profiles: {
         Row: {
           created_at: string;
@@ -30,6 +299,39 @@ export type Database = {
         };
         Relationships: [];
       };
+      tags: {
+        Row: {
+          color: string;
+          id: number;
+          name: string;
+        };
+        Insert: {
+          color: string;
+          id?: number;
+          name: string;
+        };
+        Update: {
+          color?: string;
+          id?: number;
+          name?: string;
+        };
+        Relationships: [];
+      };
+      tech_stacks: {
+        Row: {
+          id: number;
+          name: string;
+        };
+        Insert: {
+          id?: number;
+          name: string;
+        };
+        Update: {
+          id?: number;
+          name?: string;
+        };
+        Relationships: [];
+      };
     };
     Views: {
       [_ in never]: never;
@@ -38,7 +340,16 @@ export type Database = {
       [_ in never]: never;
     };
     Enums: {
-      [_ in never]: never;
+      idea_difficulty: "beginner" | "intermediate" | "advanced";
+      idea_status: "published" | "hidden" | "pending" | "rejected";
+      report_reason:
+        | "inappropriate"
+        | "spam"
+        | "offensive"
+        | "copyright"
+        | "misinformation"
+        | "other";
+      report_status: "pending" | "reviewed" | "dismissed";
     };
     CompositeTypes: {
       [_ in never]: never;
@@ -152,7 +463,22 @@ export type CompositeTypes<
   : never;
 
 export const Constants = {
-  public: {
+  graphql_public: {
     Enums: {},
+  },
+  public: {
+    Enums: {
+      idea_difficulty: ["beginner", "intermediate", "advanced"],
+      idea_status: ["published", "hidden", "pending", "rejected"],
+      report_reason: [
+        "inappropriate",
+        "spam",
+        "offensive",
+        "copyright",
+        "misinformation",
+        "other",
+      ],
+      report_status: ["pending", "reviewed", "dismissed"],
+    },
   },
 } as const;

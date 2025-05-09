@@ -5,7 +5,7 @@ import { Card, CardContent, CardFooter } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { ArrowUp } from "lucide-react";
-import { type Idea, type Tag, getTagById } from "@/lib/mock-data";
+import { Idea } from "@/lib/supabase/types";
 
 interface IdeaCardProps {
   idea: Idea;
@@ -14,9 +14,7 @@ interface IdeaCardProps {
 }
 
 export function IdeaCard({ idea, isUpvoted = false, onUpvote }: IdeaCardProps) {
-  const tags = idea.tags
-    .map((tagId) => getTagById(tagId))
-    .filter(Boolean) as Tag[];
+  const tags = idea.tags;
 
   return (
     <Card className="h-full overflow-hidden transition-all hover:shadow-lg card-enhanced flex flex-col">
@@ -46,12 +44,12 @@ export function IdeaCard({ idea, isUpvoted = false, onUpvote }: IdeaCardProps) {
         {/* Tech Stack */}
         <div className="mt-3">
           <div className="flex flex-wrap gap-1">
-            {idea.techStack.map((tech) => (
+            {idea.techStacks.map((tech) => (
               <span
-                key={tech}
+                key={tech.id}
                 className="inline-flex items-center rounded-full border px-2 py-0.5 text-xs font-semibold text-muted-foreground"
               >
-                {tech}
+                {tech.name}
               </span>
             ))}
           </div>
@@ -69,7 +67,7 @@ export function IdeaCard({ idea, isUpvoted = false, onUpvote }: IdeaCardProps) {
             className="gap-1"
           >
             <ArrowUp className="h-4 w-4" />
-            <span>{idea.upvotes}</span>
+            <span>{idea.activity?.voteCount}</span>
           </Button>
         </div>
       </CardFooter>

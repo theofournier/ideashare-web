@@ -4,7 +4,7 @@ import Link from "next/link";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { ArrowUp, Calendar } from "lucide-react";
-import { type Idea, type Tag, getTagById } from "@/lib/mock-data";
+import { Idea } from "@/lib/supabase/types";
 
 interface IdeaListItemProps {
   idea: Idea;
@@ -17,9 +17,7 @@ export function IdeaListItem({
   isUpvoted = false,
   onUpvote,
 }: IdeaListItemProps) {
-  const tags = idea.tags
-    .map((tagId) => getTagById(tagId))
-    .filter(Boolean) as Tag[];
+  const tags = idea.tags;
 
   return (
     <div className="flex flex-col sm:flex-row gap-4 p-4 border rounded-lg hover:shadow-md transition-all bg-card text-card-foreground card-enhanced">
@@ -49,17 +47,17 @@ export function IdeaListItem({
           </Badge>
 
           <div className="flex flex-wrap gap-1">
-            {idea.techStack.slice(0, 3).map((tech) => (
+            {idea.techStacks.slice(0, 3).map((tech) => (
               <span
-                key={tech}
+                key={tech.id}
                 className="inline-flex items-center rounded-full border px-2 py-0.5 text-xs font-semibold text-muted-foreground"
               >
-                {tech}
+                {tech.name}
               </span>
             ))}
-            {idea.techStack.length > 3 && (
+            {idea.techStacks.length > 3 && (
               <span className="inline-flex items-center rounded-full border px-2 py-0.5 text-xs font-semibold text-muted-foreground">
-                +{idea.techStack.length - 3} more
+                +{idea.techStacks.length - 3} more
               </span>
             )}
           </div>
@@ -79,7 +77,7 @@ export function IdeaListItem({
           className="gap-1"
         >
           <ArrowUp className="h-4 w-4" />
-          <span>{idea.upvotes}</span>
+          <span>{idea.activity?.voteCount}</span>
         </Button>
       </div>
     </div>

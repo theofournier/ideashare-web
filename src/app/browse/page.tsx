@@ -1,9 +1,11 @@
-"use client";
-
-import { useState, useEffect } from "react";
-import { ideas, tags, type Difficulty } from "@/lib/mock-data";
-import { FilterBar } from "@/components/filter-bar";
+import { getIdeas } from "@/lib/supabase/queries/idea/getIdeas";
+import { FilterBar } from "@/app/browse/_components/filter-bar";
+import { ideas as mockIdeas, tags } from "@/lib/mock-data";
+import { SideBar } from "./_components/side-bar";
+import { Button } from "@/components/ui/button";
+import { LayoutGrid, List } from "lucide-react";
 import { IdeaCard } from "@/components/idea-card";
+import { IdeaListItem } from "@/components/idea-list-item";
 import {
   Pagination,
   PaginationContent,
@@ -13,146 +15,17 @@ import {
   PaginationNext,
   PaginationPrevious,
 } from "@/components/ui/pagination";
-import { Button } from "@/components/ui/button";
-import { ChevronRight, LayoutGrid, List } from "lucide-react";
-import { IdeaListItem } from "@/components/idea-list-item";
 
-// Get unique tech stack items from all ideas
 const allTechStacks = Array.from(
-  new Set(ideas.flatMap((idea) => idea.techStack))
+  new Set(mockIdeas.flatMap((idea) => idea.techStack))
 ).sort();
 
-// Number of ideas to display per page
-const ITEMS_PER_PAGE = 6;
+export default async function BrowsePage() {
+  const ideas = await getIdeas();
 
-export default function BrowsePage() {
-  const [filteredIdeas, setFilteredIdeas] = useState(ideas);
-  const [currentPage, setCurrentPage] = useState(1);
-  const [totalPages, setTotalPages] = useState(
-    Math.ceil(ideas.length / ITEMS_PER_PAGE)
-  );
-  const [paginatedIdeas, setPaginatedIdeas] = useState<typeof ideas>([]);
-  const [sidebarCollapsed, setSidebarCollapsed] = useState(false);
-  // Add a new state for sorting at the top of the component, after the existing state declarations
-  const [sortBy, setSortBy] = useState<
-    "newest" | "oldest" | "most-upvoted" | "title-asc" | "title-desc"
-  >("newest");
-
-  const [viewMode, setViewMode] = useState<"grid" | "list">("grid");
-
-  // Add these state variables to track filter state
-  const [search, setSearch] = useState("");
-  const [difficulty, setDifficulty] = useState<Difficulty | "All">("All");
-  const [selectedTags, setSelectedTags] = useState<string[]>([]);
-  const [selectedTech, setSelectedTech] = useState<string[]>([]);
-
-  // Check if we're on mobile
-  useEffect(() => {
-    const checkIfMobile = () => {
-      if (window.innerWidth < 1024) {
-        setSidebarCollapsed(true);
-      }
-    };
-
-    checkIfMobile();
-    window.addEventListener("resize", checkIfMobile);
-    return () => window.removeEventListener("resize", checkIfMobile);
-  }, []);
-
-  // Update the handleFilterChange function to include sorting
-  const handleFilterChange = (filters: {
-    search: string;
-    difficulty: Difficulty | "All";
-    tags: string[];
-    techStack?: string[];
-    sort?: "newest" | "oldest" | "most-upvoted" | "title-asc" | "title-desc";
-  }) => {
-    const { search, difficulty, tags, techStack, sort } = filters;
-
-    const filtered = ideas.filter((idea) => {
-      // Filter by search term
-      const matchesSearch =
-        search === "" ||
-        idea.title.toLowerCase().includes(search.toLowerCase()) ||
-        idea.shortDescription.toLowerCase().includes(search.toLowerCase());
-
-      // Filter by difficulty
-      const matchesDifficulty =
-        difficulty === "All" || idea.difficulty === difficulty;
-
-      // Filter by tags
-      const matchesTags =
-        tags.length === 0 || tags.some((tag) => idea.tags.includes(tag));
-
-      // Filter by tech stack
-      const matchesTechStack =
-        !techStack ||
-        techStack.length === 0 ||
-        techStack.some((tech) => idea.techStack.includes(tech));
-
-      setSearch(search);
-      setDifficulty(difficulty);
-      setSelectedTags(tags);
-      setSelectedTech(techStack || []);
-
-      return (
-        matchesSearch && matchesDifficulty && matchesTags && matchesTechStack
-      );
-    });
-
-    // Apply sorting if provided
-    if (sort) {
-      setSortBy(sort);
-    }
-
-    // Sort the filtered ideas
-    const sortedIdeas = [...filtered].sort((a, b) => {
-      switch (sortBy) {
-        case "newest":
-          return (
-            new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime()
-          );
-        case "oldest":
-          return (
-            new Date(a.createdAt).getTime() - new Date(b.createdAt).getTime()
-          );
-        case "most-upvoted":
-          return b.upvotes - a.upvotes;
-        case "title-asc":
-          return a.title.localeCompare(b.title);
-        case "title-desc":
-          return b.title.localeCompare(a.title);
-        default:
-          return (
-            new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime()
-          );
-      }
-    });
-
-    setFilteredIdeas(sortedIdeas);
-    setTotalPages(Math.ceil(sortedIdeas.length / ITEMS_PER_PAGE));
-    setCurrentPage(1); // Reset to first page when filters change
-  };
-
-  // Add a handleSortChange function
-  const handleSortChange = (
-    sort: "newest" | "oldest" | "most-upvoted" | "title-asc" | "title-desc"
-  ) => {
-    handleFilterChange({
-      search,
-      difficulty,
-      tags: selectedTags,
-      techStack: selectedTech,
-      sort,
-    });
-  };
-
-  // Update paginated ideas whenever filtered ideas or current page changes
-  useEffect(() => {
-    const startIndex = (currentPage - 1) * ITEMS_PER_PAGE;
-    const endIndex = startIndex + ITEMS_PER_PAGE;
-    setPaginatedIdeas(filteredIdeas.slice(startIndex, endIndex));
-  }, [filteredIdeas, currentPage]);
+  const totalPages = Math.ceil(ideas?.length ?? 0 / 10);
+  const currentPage = 1;
+  const viewMode = "grid";
 
   // Generate page numbers for pagination
   const getPageNumbers = () => {
@@ -201,14 +74,6 @@ export default function BrowsePage() {
     return pageNumbers;
   };
 
-  const toggleSidebar = () => {
-    setSidebarCollapsed(!sidebarCollapsed);
-  };
-
-  const toggleViewMode = () => {
-    setViewMode(viewMode === "grid" ? "list" : "grid");
-  };
-
   return (
     <div className="container mx-auto px-4 md:px-6 py-4">
       <div className="mb-8">
@@ -218,74 +83,31 @@ export default function BrowsePage() {
         </p>
       </div>
 
-      {/* Mobile filter bar - only shown on small screens */}
       <div className="lg:hidden sticky top-16 mb-4 z-10 bg-card px-4 py-4 transition-shadow backdrop-blur-sm rounded-lg">
-        <FilterBar
-          tags={tags}
-          techOptions={allTechStacks}
-          onFilterChange={handleFilterChange}
-          sortBy={sortBy}
-          onSortChange={handleSortChange}
-        />
+        <FilterBar tags={tags} techOptions={allTechStacks} />
       </div>
-
-      {/* Desktop layout with sidebar */}
       <div className="flex flex-col lg:flex-row gap-6">
         {/* Sidebar for filters - only visible on desktop */}
-        <aside
-          className={`hidden lg:block sticky top-24 h-[calc(100vh-12rem)] overflow-auto transition-all duration-300 ${
-            sidebarCollapsed ? "w-12" : "w-80"
-          }`}
-        >
-          <div className="bg-card border rounded-lg p-4 h-full">
-            {sidebarCollapsed ? (
-              <Button
-                variant="ghost"
-                size="icon"
-                onClick={toggleSidebar}
-                className="w-full h-8 flex justify-center"
-              >
-                <ChevronRight className="h-4 w-4" />
-              </Button>
-            ) : (
-              <>
-                <div className="flex justify-between items-center mb-4">
-                  <h3 className="font-medium">Filters</h3>
-                  <Button variant="ghost" size="icon" onClick={toggleSidebar}>
-                    <ChevronRight className="h-4 w-4 rotate-180" />
-                  </Button>
-                </div>
-                <FilterBar
-                  tags={tags}
-                  techOptions={allTechStacks}
-                  onFilterChange={handleFilterChange}
-                  vertical={true}
-                  sortBy={sortBy}
-                  onSortChange={handleSortChange}
-                />
-              </>
-            )}
-          </div>
-        </aside>
+        <SideBar>
+          <FilterBar tags={tags} techOptions={allTechStacks} vertical={true} />
+        </SideBar>
 
         {/* Main content area */}
-        <div className={`flex-1 ${sidebarCollapsed ? "lg:ml-4" : "lg:ml-6"}`}>
+        <div className={"flex-1 lg:ml-4"}>
           {/* View mode toggle */}
           <div className="flex justify-end mb-4">
             <div className="bg-muted inline-flex rounded-md p-1">
               <Button
                 variant={viewMode === "grid" ? "default" : "ghost"}
                 size="sm"
-                onClick={() => setViewMode("grid")}
                 className="rounded-sm"
                 aria-label="Grid view"
               >
                 <LayoutGrid className="h-4 w-4" />
               </Button>
               <Button
-                variant={viewMode === "list" ? "default" : "ghost"}
+                variant={"ghost"}
                 size="sm"
-                onClick={() => setViewMode("list")}
                 className="rounded-sm"
                 aria-label="List view"
               >
@@ -294,7 +116,16 @@ export default function BrowsePage() {
             </div>
           </div>
           {/* Remove the standalone sort dropdown */}
-          {filteredIdeas.length === 0 ? (
+          {!ideas ? (
+            <div className="mt-12 text-center">
+              <h3 className="text-xl font-medium">
+                Error while fetching ideas
+              </h3>
+              <p className="mt-2 text-muted-foreground">
+                Try again later or contact support
+              </p>
+            </div>
+          ) : ideas?.length === 0 ? (
             <div className="mt-12 text-center">
               <h3 className="text-xl font-medium">
                 No ideas match your filters
@@ -308,13 +139,13 @@ export default function BrowsePage() {
               {/* Conditional rendering based on view mode */}
               {viewMode === "grid" ? (
                 <div className="grid gap-6 sm:grid-cols-2 xl:grid-cols-3">
-                  {paginatedIdeas.map((idea) => (
+                  {ideas.map((idea) => (
                     <IdeaCard key={idea.id} idea={idea} />
                   ))}
                 </div>
               ) : (
                 <div className="flex flex-col gap-4">
-                  {paginatedIdeas.map((idea) => (
+                  {ideas!.map((idea) => (
                     <IdeaListItem key={idea.id} idea={idea} />
                   ))}
                 </div>
@@ -325,14 +156,7 @@ export default function BrowsePage() {
                   <PaginationContent>
                     {currentPage > 1 && (
                       <PaginationItem>
-                        <PaginationPrevious
-                          href="#"
-                          onClick={(e) => {
-                            e.preventDefault();
-                            setCurrentPage(currentPage - 1);
-                            window.scrollTo({ top: 0, behavior: "smooth" });
-                          }}
-                        />
+                        <PaginationPrevious href="#" />
                       </PaginationItem>
                     )}
 
@@ -344,11 +168,6 @@ export default function BrowsePage() {
                           <PaginationLink
                             href="#"
                             isActive={page === currentPage}
-                            onClick={(e) => {
-                              e.preventDefault();
-                              setCurrentPage(page as number);
-                              window.scrollTo({ top: 0, behavior: "smooth" });
-                            }}
                           >
                             {page}
                           </PaginationLink>
@@ -358,14 +177,7 @@ export default function BrowsePage() {
 
                     {currentPage < totalPages && (
                       <PaginationItem>
-                        <PaginationNext
-                          href="#"
-                          onClick={(e) => {
-                            e.preventDefault();
-                            setCurrentPage(currentPage + 1);
-                            window.scrollTo({ top: 0, behavior: "smooth" });
-                          }}
-                        />
+                        <PaginationNext href="#" />
                       </PaginationItem>
                     )}
                   </PaginationContent>
@@ -373,7 +185,7 @@ export default function BrowsePage() {
               )}
 
               <div className="mt-4 text-center text-sm text-muted-foreground">
-                Showing {paginatedIdeas.length} of {filteredIdeas.length} ideas
+                Showing 6 of {ideas.length} ideas
               </div>
             </>
           )}
