@@ -46,7 +46,13 @@ export async function updateSession(request: NextRequest) {
   );
 
   // Protected routes
-  const protectedRoutes = ["/profile", "/ideas/submit", "/ideas/*/edit"];
+  const protectedRoutes = [
+    "/profiles/*",
+    "/account",
+    "/account/*",
+    "/ideas/submit",
+    "/ideas/*/edit",
+  ];
   const isProtectedRoute = protectedRoutes.some((route) => {
     if (route.includes("*")) {
       const routeParts = route.split("*");

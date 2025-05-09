@@ -49,7 +49,7 @@ export default async function Navbar() {
                   </Button>
                 </DropdownMenuTrigger>
                 <DropdownMenuContent align="end">
-                  <Link href="/profile">
+                  <Link href={`/profiles/${currentUser.id}`}>
                     <DropdownMenuItem>Profile</DropdownMenuItem>
                   </Link>
                   <Link href="/account">

@@ -1,35 +1,31 @@
-"use client";
-
-import { useState } from "react";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { IdeaCard } from "@/components/idea-card";
-import { ideas, userIdeas, userVotes, currentUser } from "@/lib/mock-data";
+import { ideas, userVotes } from "@/lib/mock-data";
+import { redirect } from "next/navigation";
+import { CircleUserRound } from "lucide-react";
+import { getProfile } from "@/lib/supabase/queries/profile/getProfile";
+import { NextPageProps } from "@/lib/type";
 
-export default function ProfilePage() {
-  const [upvotedIdeas, setUpvotedIdeas] = useState<string[]>(
-    userVotes[currentUser.id] || []
-  );
+export default async function ProfilePage({
+  params,
+}: NextPageProps<{ id: string }>) {
+  const { id } = await params;
+  const profile = await getProfile(id);
+  if (!profile) {
+    redirect("/login");
+  }
 
-  const userSubmittedIdeas = ideas.filter((idea) =>
-    userIdeas[currentUser.id]?.includes(idea.id)
-  );
+  const upvotedIdeas = userVotes["1"] || [];
+
+  const userSubmittedIdeas = ideas;
 
   const userLikedIdeas = ideas.filter((idea) => upvotedIdeas.includes(idea.id));
 
-  const handleUpvote = (ideaId: string) => {
-    // Toggle upvote
-    if (upvotedIdeas.includes(ideaId)) {
-      setUpvotedIdeas(upvotedIdeas.filter((id) => id !== ideaId));
-    } else {
-      setUpvotedIdeas([...upvotedIdeas, ideaId]);
-    }
-  };
-
   return (
     <div className="container mx-auto px-4 py-8">
-      <div className="mb-8 flex flex-col items-center justify-center">
-        <h1 className="text-2xl font-bold">{currentUser.name}</h1>
-        <p className="text-muted-foreground">{currentUser.email}</p>
+      <div className="mb-8 flex items-center justify-center space-x-4">
+        <CircleUserRound />
+        <h1 className="text-2xl font-bold">{profile.username}</h1>
       </div>
 
       <Tabs defaultValue="submitted" className="w-full">
@@ -46,7 +42,6 @@ export default function ProfilePage() {
                   key={idea.id}
                   idea={idea}
                   isUpvoted={upvotedIdeas.includes(idea.id)}
-                  onUpvote={handleUpvote}
                 />
               ))}
             </div>
@@ -66,12 +61,7 @@ export default function ProfilePage() {
           {userLikedIdeas.length > 0 ? (
             <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
               {userLikedIdeas.map((idea) => (
-                <IdeaCard
-                  key={idea.id}
-                  idea={idea}
-                  isUpvoted={true}
-                  onUpvote={handleUpvote}
-                />
+                <IdeaCard key={idea.id} idea={idea} isUpvoted={true} />
               ))}
             </div>
           ) : (
