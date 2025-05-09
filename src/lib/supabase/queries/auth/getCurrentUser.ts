@@ -1,15 +1,8 @@
-import { USE_MOCK_DATA } from "@/lib/utils";
 import { createClient } from "../../clients/server";
 import { profileMapping } from "../../supabaseMapping";
 import { CurrentUser } from "../../types";
-import { currentUserMock } from "../../mocks";
 
 export const getCurrentUser = async (): Promise<CurrentUser | null> => {
-  if (USE_MOCK_DATA) {
-    await new Promise((resolve) => setTimeout(resolve, 1000));
-    return currentUserMock;
-  }
-
   const supabase = await createClient();
 
   try {

@@ -1,7 +1,7 @@
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { IdeaCard } from "@/components/idea-card";
 import { ideas, userVotes } from "@/lib/mock-data";
-import { redirect } from "next/navigation";
+import { notFound } from "next/navigation";
 import { CircleUserRound } from "lucide-react";
 import { getProfile } from "@/lib/supabase/queries/profile/getProfile";
 import { NextPageProps } from "@/lib/type";
@@ -12,7 +12,7 @@ export default async function ProfilePage({
   const { id } = await params;
   const profile = await getProfile(id);
   if (!profile) {
-    redirect("/login");
+    notFound();
   }
 
   const upvotedIdeas = userVotes["1"] || [];

@@ -4,8 +4,6 @@ import { revalidatePath } from "next/cache";
 import { redirect } from "next/navigation";
 
 import { createClient } from "@/lib/supabase/clients/server";
-import { USE_MOCK_DATA } from "@/lib/utils";
-import { currentUserMock } from "../../mocks";
 
 export const loginAction = async (
   prevState: { errorMessage: string },
@@ -19,16 +17,6 @@ export const loginAction = async (
   if (!data.email || !data.password) {
     console.log("LOGIN_ERROR_EMPTY");
     return { errorMessage: "Email and password required" };
-  }
-
-  if (USE_MOCK_DATA) {
-    await new Promise((resolve) => setTimeout(resolve, 1000));
-
-    if (currentUserMock.email === data.email) {
-      redirect("/");
-    } else {
-      return { errorMessage: "Invalid login credentials" };
-    }
   }
 
   const supabase = await createClient();

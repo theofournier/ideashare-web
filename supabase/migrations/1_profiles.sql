@@ -16,7 +16,7 @@ CREATE OR REPLACE FUNCTION public.handle_new_user()
 RETURNS TRIGGER AS $$
 BEGIN
   INSERT INTO public.profiles (id, username)
-  VALUES (NEW.id, NEW.raw_user_meta_data ->> 'username')
+  VALUES (NEW.id, NEW.raw_user_meta_data ->> 'display_name')
   ON CONFLICT (id) DO NOTHING;
   RETURN NEW;
 END;
@@ -25,3 +25,19 @@ $$ LANGUAGE plpgsql SECURITY DEFINER;
 CREATE TRIGGER on_auth_user_created
   AFTER INSERT ON auth.users
   FOR EACH ROW EXECUTE FUNCTION public.handle_new_user();
+
+CREATE OR REPLACE FUNCTION public.handle_update_user()
+RETURNS TRIGGER AS $$
+BEGIN
+  UPDATE public.profiles
+  SET username = NEW.raw_user_meta_data ->> 'display_name'
+  WHERE id = NEW.id;
+  RETURN NEW;
+END;
+$$ LANGUAGE plpgsql SECURITY DEFINER;
+
+CREATE TRIGGER on_auth_user_updated
+  AFTER UPDATE ON auth.users
+  FOR EACH ROW
+  WHEN (OLD.raw_user_meta_data ->> 'display_name' IS DISTINCT FROM NEW.raw_user_meta_data ->> 'display_name')
+  EXECUTE FUNCTION public.handle_update_user();
