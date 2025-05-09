@@ -14,7 +14,8 @@ import {
   PaginationPrevious,
 } from "@/components/ui/pagination";
 import { Button } from "@/components/ui/button";
-import { ChevronRight } from "lucide-react";
+import { ChevronRight, LayoutGrid, List } from "lucide-react";
+import { IdeaListItem } from "@/components/idea-list-item";
 
 // Get unique tech stack items from all ideas
 const allTechStacks = Array.from(
@@ -36,6 +37,8 @@ export default function BrowsePage() {
   const [sortBy, setSortBy] = useState<
     "newest" | "oldest" | "most-upvoted" | "title-asc" | "title-desc"
   >("newest");
+
+  const [viewMode, setViewMode] = useState<"grid" | "list">("grid");
 
   // Add these state variables to track filter state
   const [search, setSearch] = useState("");
@@ -202,6 +205,10 @@ export default function BrowsePage() {
     setSidebarCollapsed(!sidebarCollapsed);
   };
 
+  const toggleViewMode = () => {
+    setViewMode(viewMode === "grid" ? "list" : "grid");
+  };
+
   return (
     <div className="container mx-auto px-4 md:px-6 py-4">
       <div className="mb-8">
@@ -263,6 +270,29 @@ export default function BrowsePage() {
 
         {/* Main content area */}
         <div className={`flex-1 ${sidebarCollapsed ? "lg:ml-4" : "lg:ml-6"}`}>
+          {/* View mode toggle */}
+          <div className="flex justify-end mb-4">
+            <div className="bg-muted inline-flex rounded-md p-1">
+              <Button
+                variant={viewMode === "grid" ? "default" : "ghost"}
+                size="sm"
+                onClick={() => setViewMode("grid")}
+                className="rounded-sm"
+                aria-label="Grid view"
+              >
+                <LayoutGrid className="h-4 w-4" />
+              </Button>
+              <Button
+                variant={viewMode === "list" ? "default" : "ghost"}
+                size="sm"
+                onClick={() => setViewMode("list")}
+                className="rounded-sm"
+                aria-label="List view"
+              >
+                <List className="h-4 w-4" />
+              </Button>
+            </div>
+          </div>
           {/* Remove the standalone sort dropdown */}
           {filteredIdeas.length === 0 ? (
             <div className="mt-12 text-center">
@@ -275,11 +305,20 @@ export default function BrowsePage() {
             </div>
           ) : (
             <>
-              <div className="grid gap-6 sm:grid-cols-2 xl:grid-cols-3">
-                {paginatedIdeas.map((idea) => (
-                  <IdeaCard key={idea.id} idea={idea} />
-                ))}
-              </div>
+              {/* Conditional rendering based on view mode */}
+              {viewMode === "grid" ? (
+                <div className="grid gap-6 sm:grid-cols-2 xl:grid-cols-3">
+                  {paginatedIdeas.map((idea) => (
+                    <IdeaCard key={idea.id} idea={idea} />
+                  ))}
+                </div>
+              ) : (
+                <div className="flex flex-col gap-4">
+                  {paginatedIdeas.map((idea) => (
+                    <IdeaListItem key={idea.id} idea={idea} />
+                  ))}
+                </div>
+              )}
 
               {totalPages > 1 && (
                 <Pagination className="mt-8">
