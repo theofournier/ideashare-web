@@ -52,14 +52,14 @@ export default async function Navbar() {
                   <Link href="/profile">
                     <DropdownMenuItem>Profile</DropdownMenuItem>
                   </Link>
+                  <Link href="/account">
+                    <DropdownMenuItem>Account Settings</DropdownMenuItem>
+                  </Link>
 
                   {isAdmin && (
-                    <>
-                      <DropdownMenuSeparator />
-                      <Link href="/admin">
-                        <DropdownMenuItem>Admin Panel</DropdownMenuItem>
-                      </Link>
-                    </>
+                    <Link href="/admin">
+                      <DropdownMenuItem>Admin Panel</DropdownMenuItem>
+                    </Link>
                   )}
 
                   <DropdownMenuSeparator />
