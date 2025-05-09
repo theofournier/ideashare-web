@@ -5,7 +5,7 @@ import type React from "react";
 import { useState, useEffect } from "react";
 import { useRouter, notFound } from "next/navigation";
 import Link from "next/link";
-import { ArrowLeft, Save } from "lucide-react";
+import { ArrowLeft, Save, Trash2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
@@ -34,6 +34,7 @@ import remarkGfm from "remark-gfm";
 import { Prism as SyntaxHighlighter } from "react-syntax-highlighter";
 import { vscDarkPlus } from "react-syntax-highlighter/dist/cjs/styles/prism";
 import { toast } from "sonner";
+import { DeleteIdeaDialog } from "@/components/delete-idea-dialog";
 
 const difficultyOptions = ["Beginner", "Intermediate", "Advanced"];
 const techStackOptions = [
@@ -66,6 +67,8 @@ const techStackOptions = [
 export default function EditIdeaPage() {
   const router = useRouter();
   const [isLoading, setIsLoading] = useState(false);
+  const [isDeleteDialogOpen, setIsDeleteDialogOpen] = useState(false);
+  const [isDeleting, setIsDeleting] = useState(false);
   const [idea, setIdea] = useState<Idea | null>(null);
   const [formData, setFormData] = useState({
     title: "",
@@ -148,6 +151,28 @@ export default function EditIdeaPage() {
       });
     } finally {
       setIsLoading(false);
+    }
+  };
+
+  const handleDeleteIdea = async () => {
+    setIsDeleting(true);
+
+    try {
+      // In a real app, this would be an API call to delete the idea
+      // For now, we'll just simulate a delay
+      await new Promise((resolve) => setTimeout(resolve, 1000));
+
+      toast("Idea deleted", {
+        description: "Your idea has been successfully deleted",
+      });
+
+      // Redirect to the browse page
+      router.push("/browse");
+    } catch (error) {
+      toast.error("Error", {
+        description: "Failed to delete idea. Please try again.",
+      });
+      setIsDeleting(false);
     }
   };
 
@@ -329,26 +354,50 @@ export default function EditIdeaPage() {
           </CardContent>
         </Card>
 
-        <div className="flex justify-end gap-4">
+        <div className="flex flex-col-reverse sm:flex-row sm:justify-between gap-4">
           <Button
-            variant="outline"
             type="button"
-            onClick={() => router.push(`/ideas/${id}`)}
+            variant="destructive"
+            onClick={() => setIsDeleteDialogOpen(true)}
+            disabled={isDeleting}
+            className="w-full sm:w-auto"
           >
-            Cancel
+            <Trash2 className="mr-2 h-4 w-4" />
+            {isDeleting ? "Deleting..." : "Delete Idea"}
           </Button>
-          <Button type="submit" disabled={isLoading}>
-            {isLoading ? (
-              "Saving..."
-            ) : (
-              <>
-                <Save className="mr-2 h-4 w-4" />
-                Save Changes
-              </>
-            )}
-          </Button>
+
+          <div className="flex gap-4 w-full sm:w-auto">
+            <Button
+              variant="outline"
+              type="button"
+              onClick={() => router.push(`/idea/${id}`)}
+              className="flex-1 sm:flex-initial"
+            >
+              Cancel
+            </Button>
+            <Button
+              type="submit"
+              disabled={isLoading}
+              className="flex-1 sm:flex-initial"
+            >
+              {isLoading ? (
+                "Saving..."
+              ) : (
+                <>
+                  <Save className="mr-2 h-4 w-4" />
+                  Save Changes
+                </>
+              )}
+            </Button>
+          </div>
         </div>
       </form>
+      <DeleteIdeaDialog
+        isOpen={isDeleteDialogOpen}
+        onClose={() => setIsDeleteDialogOpen(false)}
+        onConfirm={handleDeleteIdea}
+        ideaTitle={idea.title}
+      />
     </div>
   );
 }
