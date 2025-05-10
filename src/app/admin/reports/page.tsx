@@ -401,7 +401,7 @@ export default function ReportsManagement() {
             <DialogDescription>
               {actionType === "approve"
                 ? "Are you sure you want to approve this report? This will mark the report as reviewed."
-                : "Are you sure you want to dismiss this report? This indicates the report doesn't require action."}
+                : "Are you sure you want to dismiss this report? This indicates the report does not require action."}
             </DialogDescription>
           </DialogHeader>
           <DialogFooter>

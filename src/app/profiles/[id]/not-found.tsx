@@ -12,7 +12,7 @@ export default function ProfileNotFound() {
         Profile Not Found
       </h1>
       <p className="text-xl text-muted-foreground mb-8 max-w-md mx-auto">
-        The user profile you're looking for doesn't exist or may have been
+        The user profile you are looking for does not exist or may have been
         removed.
       </p>
       <div className="flex flex-col sm:flex-row gap-4">

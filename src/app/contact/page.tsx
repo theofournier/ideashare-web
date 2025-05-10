@@ -40,7 +40,7 @@ export default function ContactPage() {
     await new Promise((resolve) => setTimeout(resolve, 1000));
 
     toast("Message sent!", {
-      description: "We'll get back to you as soon as possible.",
+      description: "We will get back to you as soon as possible.",
     });
 
     setFormData({
