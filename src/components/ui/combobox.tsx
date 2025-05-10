@@ -1,29 +1,41 @@
-"use client"
+"use client";
 
-import * as React from "react"
-import { Check, ChevronsUpDown, X } from "lucide-react"
+import * as React from "react";
+import { Check, ChevronsUpDown, X } from "lucide-react";
 
-import { cn } from "@/lib/utils"
-import { Button } from "@/components/ui/button"
-import { Command, CommandEmpty, CommandGroup, CommandInput, CommandItem, CommandList } from "@/components/ui/command"
-import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover"
-import { Badge } from "@/components/ui/badge"
+import { cn } from "@/lib/utils";
+import { Button } from "@/components/ui/button";
+import {
+  Command,
+  CommandEmpty,
+  CommandGroup,
+  CommandInput,
+  CommandItem,
+  CommandList,
+} from "@/components/ui/command";
+import {
+  Popover,
+  PopoverContent,
+  PopoverTrigger,
+} from "@/components/ui/popover";
+import { Badge } from "@/components/ui/badge";
 
 export interface ComboboxOption {
-  value: string
-  label: string
-  color?: string
+  value: string;
+  label: string;
+  color?: string;
 }
 
 interface ComboboxProps {
-  options: ComboboxOption[]
-  placeholder?: string
-  emptyMessage?: string
-  selectedValues: string[]
-  onSelect: (value: string) => void
-  onRemove: (value: string) => void
-  multiple?: boolean
-  className?: string
+  options: ComboboxOption[];
+  placeholder?: string;
+  emptyMessage?: string;
+  selectedValues: string[];
+  onSelect: (value: string) => void;
+  onRemove: (value: string) => void;
+  multiple?: boolean;
+  className?: string;
+  name?: string;
 }
 
 export function Combobox({
@@ -35,30 +47,43 @@ export function Combobox({
   onRemove,
   multiple = false,
   className,
+  name,
 }: ComboboxProps) {
-  const [open, setOpen] = React.useState(false)
-  const [search, setSearch] = React.useState("")
+  const [open, setOpen] = React.useState(false);
+  const [search, setSearch] = React.useState("");
 
   // Filter options based on search
   const filteredOptions = options.filter((option) => {
-    const matchesSearch = option.label.toLowerCase().includes(search.toLowerCase())
-    const isSelected = selectedValues.includes(option.value)
+    const matchesSearch = option.label
+      .toLowerCase()
+      .includes(search.toLowerCase());
+    const isSelected = selectedValues.includes(option.value);
     // If multiple, show all matching options, otherwise hide selected ones
-    return matchesSearch && (multiple || !isSelected)
-  })
+    return matchesSearch && (multiple || !isSelected);
+  });
 
   // Get selected options for display
   const selectedOptions = selectedValues.map(
-    (value) => options.find((option) => option.value === value) || { value, label: value },
-  )
+    (value) =>
+      options.find((option) => option.value === value) || {
+        value,
+        label: value,
+      }
+  );
 
   return (
     <div className={cn("space-y-2", className)}>
       <Popover open={open} onOpenChange={setOpen}>
         <PopoverTrigger asChild>
-          <Button variant="outline" role="combobox" aria-expanded={open} className="w-full justify-between">
+          <Button
+            variant="outline"
+            role="combobox"
+            aria-expanded={open}
+            className="w-full justify-between"
+          >
             {selectedValues.length > 0 && !multiple
-              ? options.find((option) => option.value === selectedValues[0])?.label
+              ? options.find((option) => option.value === selectedValues[0])
+                  ?.label
               : placeholder}
             <ChevronsUpDown className="ml-2 h-4 w-4 shrink-0 opacity-50" />
           </Button>
@@ -79,18 +104,20 @@ export function Combobox({
                     value={option.value}
                     onSelect={() => {
                       if (multiple) {
-                        onSelect(option.value)
-                        setSearch("")
+                        onSelect(option.value);
+                        setSearch("");
                       } else {
-                        onSelect(option.value)
-                        setOpen(false)
+                        onSelect(option.value);
+                        setOpen(false);
                       }
                     }}
                   >
                     <Check
                       className={cn(
                         "mr-2 h-4 w-4",
-                        selectedValues.includes(option.value) ? "opacity-100" : "opacity-0",
+                        selectedValues.includes(option.value)
+                          ? "opacity-100"
+                          : "opacity-0"
                       )}
                     />
                     {option.label}
@@ -105,13 +132,32 @@ export function Combobox({
       {multiple && selectedOptions.length > 0 && (
         <div className="flex flex-wrap gap-1">
           {selectedOptions.map((option) => (
-            <Badge key={option.value} variant="secondary" className={cn("gap-1 px-2 py-1", option.color)}>
-              {option.label}
-              <X className="h-3 w-3 cursor-pointer" onClick={() => onRemove(option.value)} />
-            </Badge>
+            <div key={option.value}>
+              <input
+                className="hidden"
+                aria-hidden
+                type="hidden"
+                name={name}
+                value={option.value}
+              />
+              <Badge
+                variant="secondary"
+                className={cn("gap-1 px-2 py-1", option.color)}
+              >
+                {option.label}
+                <Button
+                  onClick={() => onRemove(option.value)}
+                  variant="ghost"
+                  size="icon"
+                  className="h-3 w-3 p-0 bg-transparent hover:bg-transparent"
+                >
+                  <X className="h-3 w-3" />
+                </Button>
+              </Badge>
+            </div>
           ))}
         </div>
       )}
     </div>
-  )
+  );
 }
