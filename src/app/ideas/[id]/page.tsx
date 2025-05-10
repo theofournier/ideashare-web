@@ -1,97 +1,30 @@
-"use client";
-
-import { useState, useEffect } from "react";
-import { notFound, useParams } from "next/navigation";
+import { notFound } from "next/navigation";
 import Link from "next/link";
 import { ArrowLeft, ArrowUp, Flag, User, Edit } from "lucide-react";
 import { Button, buttonVariants } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Separator } from "@/components/ui/separator";
-import {
-  getIdeaById,
-  getTagsForIdea,
-  getUserForIdea,
-  userVotes,
-  currentUser,
-  ideas,
-  getUserById,
-} from "@/lib/mock-data";
-import { ReportIdeaModal } from "@/components/report-idea-modal";
+import { ideas } from "@/lib/mock-data";
+import { ReportIdeaModal } from "@/app/ideas/[id]/_components/report-idea-modal";
 import { SimilarIdeas } from "@/components/similar-ideas";
 import ReactMarkdown from "react-markdown";
 import remarkGfm from "remark-gfm";
 import { Prism as SyntaxHighlighter } from "react-syntax-highlighter";
 import { vscDarkPlus } from "react-syntax-highlighter/dist/cjs/styles/prism";
 import { Card, CardContent } from "@/components/ui/card";
+import { NextPageProps } from "@/lib/type";
+import { getIdea } from "@/lib/supabase/queries/idea/getIdea";
 
-export default function IdeaDetailPage() {
-  const { id } = useParams<{ id: string }>();
-  const idea = getIdeaById(id);
-
-  // Initialize state variables outside the conditional check
-  const [isUpvoted, setIsUpvoted] = useState(false);
-  const [upvotes, setUpvotes] = useState(0);
-  const [isReportModalOpen, setIsReportModalOpen] = useState(false);
-  const [canEdit, setCanEdit] = useState(false);
-
-  useEffect(() => {
-    if (idea) {
-      // Update isUpvoted based on userVotes when the component mounts or id changes
-      setIsUpvoted(userVotes[currentUser.id]?.includes(id) || false);
-      setUpvotes(idea.upvotes); // Initialize upvotes here
-
-      // Check if user can edit (admin or idea owner)
-      const user = getUserById(currentUser.id);
-      const isAdmin = user?.role === "admin";
-      const isOwner = idea.userId === currentUser.id;
-      setCanEdit(isAdmin || isOwner);
-    }
-  }, [id, idea?.upvotes, idea]);
-
+export default async function IdeaDetailPage({
+  params,
+}: NextPageProps<{ id: string }>) {
+  const { id } = await params;
+  const idea = await getIdea({ id });
   if (!idea) {
-    return notFound();
+    notFound();
   }
 
-  const tags = getTagsForIdea(idea);
-  const user = getUserForIdea(idea);
-
-  const handleUpvote = () => {
-    setIsUpvoted(!isUpvoted);
-    setUpvotes(isUpvoted ? upvotes - 1 : upvotes + 1);
-  };
-
-  // Find similar ideas based on tags and tech stack
-  const similarIdeas = ideas
-    .filter(
-      (otherIdea) =>
-        otherIdea.id !== id && // Not the current idea
-        // Has at least one common tag
-        (otherIdea.tags.some((tag) => idea.tags.includes(tag)) ||
-          // Has at least one common tech stack item
-          otherIdea.techStack.some((tech) => idea.techStack.includes(tech)))
-    )
-    .sort((a, b) => {
-      // Count common tags and tech stack items
-      const aCommonTags = a.tags.filter((tag) =>
-        idea.tags.includes(tag)
-      ).length;
-      const aCommonTech = a.techStack.filter((tech) =>
-        idea.techStack.includes(tech)
-      ).length;
-      const aTotal = aCommonTags + aCommonTech;
-
-      const bCommonTags = b.tags.filter((tag) =>
-        idea.tags.includes(tag)
-      ).length;
-      const bCommonTech = b.techStack.filter((tech) =>
-        idea.techStack.includes(tech)
-      ).length;
-      const bTotal = bCommonTags + bCommonTech;
-
-      // Sort by most similar first
-      return bTotal - aTotal;
-    })
-    .slice(0, 6); // Get top 6 similar ideas
+  const similarIdeas = ideas.slice(0, 6);
 
   return (
     <div className="container mx-auto px-4 md:px-6 py-8">
@@ -111,32 +44,18 @@ export default function IdeaDetailPage() {
             </p>
           </div>
           <div className="flex gap-2">
-            {canEdit && (
-              <Link
-                href={`/ideas/${id}/edit`}
-                className={buttonVariants({ variant: "outline" })}
-              >
-                <Edit className="mr-2 h-4 w-4" />
-                Edit
-              </Link>
-            )}
-            <Button
-              variant={isUpvoted ? "default" : "outline"}
-              onClick={handleUpvote}
-              className="w-full sm:w-auto"
+            <Link
+              href={`/ideas/${id}/edit`}
+              className={buttonVariants({ variant: "outline" })}
             >
+              <Edit className="mr-2 h-4 w-4" />
+              Edit
+            </Link>
+            <Button variant={"outline"} className="w-full sm:w-auto">
               <ArrowUp className="mr-2 h-4 w-4" />
-              Upvote ({upvotes})
+              Upvote ({idea.activity?.voteCount || 0})
             </Button>
-            <Button
-              variant="outline"
-              size="icon"
-              onClick={() => setIsReportModalOpen(true)}
-              title="Report this idea"
-            >
-              <Flag className="h-4 w-4" />
-              <span className="sr-only">Report</span>
-            </Button>
+            <ReportIdeaModal ideaId={id} ideaTitle={idea.title} />
           </div>
         </div>
       </div>
@@ -193,7 +112,7 @@ export default function IdeaDetailPage() {
                     Tags
                   </h4>
                   <div className="mt-1 flex flex-wrap gap-1">
-                    {tags.map((tag) => (
+                    {idea.tags.map((tag) => (
                       <Badge key={tag.id} className={`${tag.color} text-white`}>
                         {tag.name}
                       </Badge>
@@ -206,9 +125,9 @@ export default function IdeaDetailPage() {
                     Suggested Tech Stack
                   </h4>
                   <div className="mt-1 flex flex-wrap gap-1">
-                    {idea.techStack.map((tech) => (
-                      <Badge key={tech} variant="secondary">
-                        {tech}
+                    {idea.techStacks.map((tech) => (
+                      <Badge key={tech.id} variant="secondary">
+                        {tech.name}
                       </Badge>
                     ))}
                   </div>
@@ -221,15 +140,12 @@ export default function IdeaDetailPage() {
                     Submitted by
                   </h4>
                   <div className="mt-2 flex items-center">
-                    {user ? (
-                      <>
-                        <span className="ml-2 font-medium">{user.name}</span>
-                      </>
+                    {idea.profile ? (
+                      <span className="font-medium">
+                        {idea.profile.username}
+                      </span>
                     ) : (
-                      <>
-                        <User className="h-8 w-8 rounded-full bg-muted p-1.5" />
-                        <span className="ml-2 font-medium">Unknown User</span>
-                      </>
+                      <span className="font-medium">Unknown User</span>
                     )}
                   </div>
                 </div>
@@ -260,14 +176,6 @@ export default function IdeaDetailPage() {
           )}
         </div>
       </div>
-
-      {/* Report Modal */}
-      <ReportIdeaModal
-        ideaId={id}
-        ideaTitle={idea.title}
-        isOpen={isReportModalOpen}
-        onClose={() => setIsReportModalOpen(false)}
-      />
     </div>
   );
 }

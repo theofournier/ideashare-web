@@ -8,6 +8,7 @@ import {
   DialogFooter,
   DialogHeader,
   DialogTitle,
+  DialogTrigger,
 } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
 import { Label } from "@/components/ui/label";
@@ -15,20 +16,15 @@ import { Textarea } from "@/components/ui/textarea";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import type { ReportReason } from "@/lib/admin-data";
 import { toast } from "sonner";
+import { Flag } from "lucide-react";
 
 interface ReportIdeaModalProps {
   ideaId: string;
   ideaTitle: string;
-  isOpen: boolean;
-  onClose: () => void;
 }
 
-export function ReportIdeaModal({
-  ideaId,
-  ideaTitle,
-  isOpen,
-  onClose,
-}: ReportIdeaModalProps) {
+export function ReportIdeaModal({ ideaId, ideaTitle }: ReportIdeaModalProps) {
+  const [reportModalOpen, setReportModalOpen] = useState(false);
   const [reason, setReason] = useState<ReportReason | null>(null);
   const [description, setDescription] = useState("");
   const [isSubmitting, setIsSubmitting] = useState(false);
@@ -61,11 +57,17 @@ export function ReportIdeaModal({
     // Reset form and close modal
     setReason(null);
     setDescription("");
-    onClose();
+    setReportModalOpen(false);
   };
 
   return (
-    <Dialog open={isOpen} onOpenChange={onClose}>
+    <Dialog open={reportModalOpen} onOpenChange={setReportModalOpen}>
+      <DialogTrigger asChild>
+        <Button variant="outline" size="icon" title="Report this idea">
+          <Flag className="h-4 w-4" />
+          <span className="sr-only">Report</span>
+        </Button>
+      </DialogTrigger>
       <DialogContent className="sm:max-w-[500px]">
         <DialogHeader>
           <DialogTitle>Report Idea</DialogTitle>
@@ -122,7 +124,11 @@ export function ReportIdeaModal({
         </div>
 
         <DialogFooter>
-          <Button variant="outline" onClick={onClose} disabled={isSubmitting}>
+          <Button
+            variant="outline"
+            onClick={() => setReportModalOpen(false)}
+            disabled={isSubmitting}
+          >
             Cancel
           </Button>
           <Button onClick={handleSubmit} disabled={isSubmitting}>
