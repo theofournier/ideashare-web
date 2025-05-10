@@ -9,8 +9,6 @@ type IdeaTechStack = Database["public"]["Tables"]["idea_tech_stacks"]["Row"] & {
   tech_stacks: Database["public"]["Tables"]["tech_stacks"]["Row"];
 };
 
-Constants["public"]["Enums"]["idea_status"];
-
 export const profileMapping = (profile: SupabaseProfile): Profile => ({
   id: profile.id,
   username: profile.username || undefined,
