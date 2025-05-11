@@ -5,7 +5,8 @@ import { createClient } from "../../clients/server";
 import { getSupabaseUser } from "../../queries/auth/getSupabaseUser";
 import { IdeaDifficulty } from "../../types";
 
-export const submitIdea = async (
+export const editIdea = async (
+  id: string,
   prevState: { errorMessage: string },
   formData: FormData
 ) => {
@@ -24,63 +25,93 @@ export const submitIdea = async (
     !ideaData.fullDescription ||
     !ideaData.difficulty
   ) {
-    console.log("CREATE_IDEA_ERROR_EMPTY");
+    console.log("EDIT_IDEA_ERROR_EMPTY");
     return { errorMessage: "All fields are required" };
   }
 
   const user = await getSupabaseUser();
 
   if (!user) {
-    console.log("CREATE_IDEA_ERROR_NOT_CONNECTED");
+    console.log("EDIT_IDEA_ERROR_NOT_CONNECTED");
     return { errorMessage: "Not connected" };
   }
 
   const supabase = await createClient();
 
-  const { data, error } = await supabase
+  const { data: idea, error: ideaError } = await supabase
     .from("ideas")
-    .insert({
+    .select("*, profiles!ideas_user_id_fkey1(*)")
+    .eq("id", id)
+    .single();
+
+  if (!idea || ideaError) {
+    console.log("EDIT_IDEA_ERROR_NOT_FOUND");
+    return { errorMessage: "Idea not found" };
+  }
+  if (idea.profiles?.id !== user.id) {
+    console.log("EDIT_IDEA_ERROR_NOT_OWNER");
+    return { errorMessage: "You are not the owner of this idea" };
+  }
+
+  const { error: updateError } = await supabase
+    .from("ideas")
+    .update({
       title: ideaData.title,
       short_description: ideaData.shortDescription,
       full_description: ideaData.fullDescription,
       difficulty: ideaData.difficulty,
-      user_id: user.id,
     })
-    .select()
-    .single();
-
-  if (error || !data) {
-    console.log("CREATE_IDEA_ERROR", error);
-    return { errorMessage: "Error occured when creating idea" };
+    .eq("id", id);
+  if (updateError) {
+    console.log("EDIT_IDEA_ERROR", updateError);
+    return { errorMessage: "Error occured when updating idea" };
   }
 
   if (ideaData.tags?.length !== 0) {
-    const { error: tagsError } = await supabase.from("idea_tags").insert(
+    const { error: tagsError } = await supabase
+      .from("idea_tags")
+      .delete()
+      .eq("idea_id", id);
+
+    if (tagsError) {
+      console.log("EDIT_IDEA_TAGS_ERROR", tagsError);
+    }
+
+    const { error: insertTagsError } = await supabase.from("idea_tags").insert(
       ideaData.tags.map((tag) => ({
-        idea_id: data.id,
+        idea_id: id,
         tag_id: +tag,
       }))
     );
 
-    if (tagsError) {
-      console.log("CREATE_IDEA_TAGS_ERROR", tagsError);
+    if (insertTagsError) {
+      console.log("EDIT_IDEA_TAGS_ERROR", insertTagsError);
     }
   }
 
   if (ideaData.techStacks?.length !== 0) {
     const { error: techStacksError } = await supabase
       .from("idea_tech_stacks")
+      .delete()
+      .eq("idea_id", id);
+
+    if (techStacksError) {
+      console.log("EDIT_IDEA_TECH_STACKS_ERROR", techStacksError);
+    }
+
+    const { error: insertTechStacksError } = await supabase
+      .from("idea_tech_stacks")
       .insert(
         ideaData.techStacks.map((techStack) => ({
-          idea_id: data.id,
+          idea_id: id,
           tech_stack_id: +techStack,
         }))
       );
 
-    if (techStacksError) {
-      console.log("CREATE_IDEA_TECH_STACKS_ERROR", techStacksError);
+    if (insertTechStacksError) {
+      console.log("EDIT_IDEA_TECH_STACKS_ERROR", insertTechStacksError);
     }
   }
 
-  redirect(`/ideas/${data.id}`);
+  redirect(`/ideas/${id}`);
 };

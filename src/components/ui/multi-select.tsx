@@ -17,10 +17,12 @@ import {
   PopoverTrigger,
 } from "@/components/ui/popover";
 import { cn } from "@/lib/utils";
+import { get } from "http";
 
 export type OptionType = {
   label: string;
   value: string;
+  color?: string;
 };
 
 interface MultiSelectProps {
@@ -29,6 +31,7 @@ interface MultiSelectProps {
   onChange: (values: string[]) => void;
   placeholder?: string;
   className?: string;
+  name?: string;
 }
 
 export function MultiSelect({
@@ -37,6 +40,7 @@ export function MultiSelect({
   onChange,
   placeholder = "Select options",
   className,
+  name,
 }: MultiSelectProps) {
   const [open, setOpen] = React.useState(false);
 
@@ -48,6 +52,12 @@ export function MultiSelect({
   const getLabel = (value: string) => {
     const option = options.find((option) => option.value === value);
     return option ? option.label : value;
+  };
+
+  // Find the color for a value
+  const getColor = (value: string) => {
+    const option = options.find((option) => option.value === value);
+    return option?.color;
   };
 
   return (
@@ -68,24 +78,32 @@ export function MultiSelect({
               <span className="text-muted-foreground">{placeholder}</span>
             )}
             {selected.map((value) => (
-              <Badge
-                key={value}
-                variant="secondary"
-                className="flex items-center gap-1"
-              >
-                {getLabel(value)}
-                <button
-                  type="button"
-                  className="rounded-full outline-none ring-offset-background focus:ring-2 focus:ring-ring focus:ring-offset-2"
-                  onClick={(e) => {
-                    e.stopPropagation();
-                    handleUnselect(value);
-                  }}
+              <div key={value}>
+                <input
+                  className="hidden"
+                  aria-hidden
+                  type="hidden"
+                  name={name}
+                  value={value}
+                />
+                <Badge
+                  variant="secondary"
+                  className={cn("flex items-center gap-1", getColor(value))}
                 >
-                  <X className="h-3 w-3 text-muted-foreground hover:text-foreground" />
-                  <span className="sr-only">Remove {getLabel(value)}</span>
-                </button>
-              </Badge>
+                  {getLabel(value)}
+                  <button
+                    type="button"
+                    className="rounded-full outline-none ring-offset-background focus:ring-2 focus:ring-ring focus:ring-offset-2"
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      handleUnselect(value);
+                    }}
+                  >
+                    <X className="h-3 w-3" />
+                    <span className="sr-only">Remove {getLabel(value)}</span>
+                  </button>
+                </Badge>
+              </div>
             ))}
           </div>
         </div>

@@ -3,7 +3,6 @@
 import type React from "react";
 
 import { useActionState, useState } from "react";
-import { useRouter } from "next/navigation";
 import { Button, buttonVariants } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
@@ -15,7 +14,7 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { Label } from "@/components/ui/label";
-import { tags, type Difficulty } from "@/lib/mock-data";
+import { tags } from "@/lib/mock-data";
 import {
   Card,
   CardContent,
@@ -23,8 +22,7 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
-import { Eye, Edit } from "lucide-react";
-import { Combobox, type ComboboxOption } from "@/components/ui/combobox";
+import { Eye, Edit, Save } from "lucide-react";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import ReactMarkdown from "react-markdown";
 import remarkGfm from "remark-gfm";
@@ -32,6 +30,7 @@ import { Prism as SyntaxHighlighter } from "react-syntax-highlighter";
 import { vscDarkPlus } from "react-syntax-highlighter/dist/cjs/styles/prism";
 import { submitIdea } from "@/lib/supabase/actions/idea/submitIdea";
 import Link from "next/link";
+import { MultiSelect } from "@/components/ui/multi-select";
 
 // Mock tech stacks data
 const techStackOptions = [
@@ -60,30 +59,6 @@ export default function SubmitIdeaForm() {
   const [fullDescription, setFullDescription] = useState("");
   const [selectedTags, setSelectedTags] = useState<string[]>([]);
   const [techStack, setTechStack] = useState<string[]>([]);
-  const [activeTab, setActiveTab] = useState("edit");
-
-  // Convert tags to combobox options
-  const tagOptions: ComboboxOption[] = tags.map((tag) => ({
-    value: tag.id,
-    label: tag.name,
-    color: tag.color,
-  }));
-
-  const handleTagSelect = (tagId: string) => {
-    setSelectedTags([...selectedTags, tagId]);
-  };
-
-  const handleTagRemove = (tagId: string) => {
-    setSelectedTags(selectedTags.filter((id) => id !== tagId));
-  };
-
-  const handleTechStackSelect = (tech: string) => {
-    setTechStack([...techStack, tech]);
-  };
-
-  const handleTechStackRemove = (tech: string) => {
-    setTechStack(techStack.filter((t) => t !== tech));
-  };
 
   return (
     <form action={formAction} className="space-y-8">
@@ -111,6 +86,7 @@ export default function SubmitIdeaForm() {
               id="shortDescription"
               name="shortDescription"
               placeholder="Brief summary of your idea (1-2 sentences)"
+              rows={2}
               required
             />
           </div>
@@ -118,11 +94,7 @@ export default function SubmitIdeaForm() {
           <div className="space-y-2">
             <Label htmlFor="fullDescription">Full Description</Label>
             <div className="rounded-md border">
-              <Tabs
-                value={activeTab}
-                onValueChange={setActiveTab}
-                className="w-full"
-              >
+              <Tabs defaultValue="edit" className="w-full">
                 <TabsList className="grid w-full grid-cols-2">
                   <TabsTrigger value="edit" className="flex items-center gap-2">
                     <Edit className="h-4 w-4" />
@@ -245,30 +217,28 @@ export default function SubmitIdeaForm() {
           </div>
 
           <div className="space-y-2">
-            <Label>Tags</Label>
-            <Combobox
+            <Label htmlFor="tags">Tags</Label>
+            <MultiSelect
               name="tags"
-              options={tagOptions}
+              options={tags.map((tag) => ({
+                label: tag.name,
+                value: tag.id,
+                color: tag.color,
+              }))}
+              selected={selectedTags}
+              onChange={(values) => setSelectedTags(values)}
               placeholder="Select tags"
-              emptyMessage="No tags found."
-              selectedValues={selectedTags}
-              onSelect={handleTagSelect}
-              onRemove={handleTagRemove}
-              multiple={true}
             />
           </div>
 
           <div className="space-y-2">
-            <Label>Tech Stack</Label>
-            <Combobox
+            <Label htmlFor="tags">Tech Stack</Label>
+            <MultiSelect
               name="techStacks"
               options={techStackOptions}
+              selected={techStack}
+              onChange={(values) => setTechStack(values)}
               placeholder="Select technologies"
-              emptyMessage="No technologies found."
-              selectedValues={techStack}
-              onSelect={handleTechStackSelect}
-              onRemove={handleTechStackRemove}
-              multiple={true}
             />
           </div>
         </CardContent>
@@ -284,7 +254,14 @@ export default function SubmitIdeaForm() {
           Cancel
         </Link>
         <Button type="submit" disabled={isPending}>
-          {isPending ? "Submitting..." : "Submit Idea"}
+          {isPending ? (
+            "Submitting..."
+          ) : (
+            <>
+              <Save />
+              Submit Idea
+            </>
+          )}
         </Button>
       </div>
     </form>
