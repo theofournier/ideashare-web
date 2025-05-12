@@ -20,7 +20,7 @@ import { redirect } from "next/navigation";
 export default async function AccountPage() {
   const currentUser = await getCurrentUser();
   if (!currentUser) {
-    redirect("/login");
+    redirect("/login?next=/account");
   }
 
   return (

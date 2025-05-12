@@ -17,8 +17,13 @@ import Link from "next/link";
 import { Button } from "@/components/ui/button";
 import { registerAction } from "@/lib/supabase/actions/auth/register-action";
 
-export const RegisterForm = () => {
-  const [state, formAction, isPending] = useActionState(registerAction, {
+type Props = {
+  redirectTo?: string;
+};
+
+export const RegisterForm = ({ redirectTo }: Props) => {
+  const action = registerAction.bind(null, redirectTo);
+  const [state, formAction, isPending] = useActionState(action, {
     errorMessage: "",
   });
 
@@ -91,7 +96,10 @@ export const RegisterForm = () => {
 
           <div className="text-center text-sm">
             Already have an account?{" "}
-            <Link href="/login" className="text-primary hover:underline">
+            <Link
+              href={`/login${redirectTo ? `?next=${redirectTo}` : ""}`}
+              className="text-primary hover:underline"
+            >
               Login
             </Link>
           </div>

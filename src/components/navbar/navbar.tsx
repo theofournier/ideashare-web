@@ -33,14 +33,13 @@ export default async function Navbar() {
           <NavbarItem href="/browse">
             <Search /> Browse
           </NavbarItem>
+          <NavbarItem href="/ideas/submit">
+            <PlusCircle />
+            Submit Idea
+          </NavbarItem>
 
           {isLoggedIn ? (
             <>
-              <NavbarItem href="/ideas/submit">
-                <PlusCircle />
-                Submit Idea
-              </NavbarItem>
-
               <DropdownMenu>
                 <DropdownMenuTrigger asChild>
                   <Button variant="ghost">

@@ -22,7 +22,7 @@ export default function AdminLayout({
 }) {
   // In a real app, we would check if the user is authenticated and is an admin
   if (!isAdmin) {
-    redirect("/login");
+    redirect("/login?next=/admin");
   }
 
   return (

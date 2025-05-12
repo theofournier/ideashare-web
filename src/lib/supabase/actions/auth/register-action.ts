@@ -7,6 +7,7 @@ import { createClient } from "@/lib/supabase/clients/server";
 import { SignUpWithPasswordCredentials } from "@supabase/supabase-js";
 
 export const registerAction = async (
+  redirectTo: string | undefined,
   prevState: { errorMessage: string },
   formData: FormData
 ) => {
@@ -36,5 +37,5 @@ export const registerAction = async (
   }
 
   revalidatePath("/", "layout");
-  redirect("/");
+  redirect(redirectTo || "/");
 };

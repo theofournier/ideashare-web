@@ -6,6 +6,7 @@ import { redirect } from "next/navigation";
 import { createClient } from "@/lib/supabase/clients/server";
 
 export const loginAction = async (
+  redirectTo: string | undefined,
   prevState: { errorMessage: string },
   formData: FormData
 ) => {
@@ -28,5 +29,5 @@ export const loginAction = async (
   }
 
   revalidatePath("/", "layout");
-  redirect("/");
+  redirect(redirectTo || "/");
 };

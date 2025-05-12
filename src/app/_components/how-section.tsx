@@ -12,7 +12,7 @@ const Section = ({
 }) => {
   return (
     <div className="flex flex-col items-center text-center">
-      <div className="mb-4 rounded-full bg-primary/40 p-4">
+      <div className="mb-4 rounded-full bg-primary/10 dark:bg-primary/40 p-4">
         <Icon className="h-8 w-8 text-primary" />
       </div>
       <h3 className="mb-2 text-xl font-bold">{title}</h3>

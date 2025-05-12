@@ -17,8 +17,13 @@ import Link from "next/link";
 import { Button } from "@/components/ui/button";
 import { loginAction } from "@/lib/supabase/actions/auth/login-action";
 
-export const LoginForm = () => {
-  const [state, formAction, isPending] = useActionState(loginAction, {
+type Props = {
+  redirectTo?: string;
+};
+
+export const LoginForm = ({ redirectTo }: Props) => {
+  const action = loginAction.bind(null, redirectTo);
+  const [state, formAction, isPending] = useActionState(action, {
     errorMessage: "",
   });
 
@@ -61,7 +66,9 @@ export const LoginForm = () => {
               disabled={isPending}
             />
             <Link
-              href="/forgot-password"
+              href={`/forgot-password${
+                redirectTo ? `?next=${redirectTo}` : ""
+              }`}
               className="text-xs text-primary hover:underline"
             >
               Forgot password?
@@ -83,7 +90,10 @@ export const LoginForm = () => {
 
           <div className="text-center text-sm">
             Don&apos;t have an account?{" "}
-            <Link href="/register" className="text-primary hover:underline">
+            <Link
+              href={`/register${redirectTo ? `?next=${redirectTo}` : ""}`}
+              className="text-primary hover:underline"
+            >
               Register
             </Link>
           </div>
