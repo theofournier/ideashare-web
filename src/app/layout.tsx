@@ -22,10 +22,8 @@ export const metadata: Metadata = {
 
 export default function RootLayout({
   children,
-  auth,
 }: Readonly<{
   children: React.ReactNode;
-  auth: React.ReactNode;
 }>) {
   return (
     <html lang="en" suppressHydrationWarning>
@@ -38,15 +36,12 @@ export default function RootLayout({
           enableSystem
           disableTransitionOnChange
         >
-          <>
-            <div className="flex min-h-screen flex-col bg-background">
-              <Navbar />
-              <main className="flex-1">{children}</main>
-              <Footer />
-              <Toaster />
-            </div>
-            {auth}
-          </>
+          <div className="flex min-h-screen flex-col bg-background">
+            <Navbar />
+            <main className="flex-1">{children}</main>
+            <Footer />
+            <Toaster />
+          </div>
         </ThemeProvider>
       </body>
     </html>
