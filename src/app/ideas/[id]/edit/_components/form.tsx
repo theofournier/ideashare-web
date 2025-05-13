@@ -34,7 +34,7 @@ import { Prism as SyntaxHighlighter } from "react-syntax-highlighter";
 import { vscDarkPlus } from "react-syntax-highlighter/dist/cjs/styles/prism";
 import { DeleteIdeaDialog } from "@/app/ideas/[id]/edit/_components/delete-idea-dialog";
 import { Idea } from "@/lib/supabase/types";
-import { editIdea } from "@/lib/supabase/actions/idea/editIdea";
+import { editIdeaAction } from "@/lib/supabase/actions/idea/edit-idea-action";
 import { ComboboxOption } from "@/components/ui/combobox";
 
 const techStackOptions: ComboboxOption[] = [
@@ -58,7 +58,7 @@ const techStackOptions: ComboboxOption[] = [
 type Props = { idea: Idea };
 
 export default function EditIdeaForm({ idea }: Props) {
-  const action = editIdea.bind(null, idea.id);
+  const action = editIdeaAction.bind(null, idea.id);
   const [state, formAction, isPending] = useActionState(action, {
     errorMessage: "",
   });
@@ -261,7 +261,7 @@ export default function EditIdeaForm({ idea }: Props) {
       </Card>
 
       <div className="flex flex-col-reverse sm:flex-row sm:justify-between gap-4">
-        <DeleteIdeaDialog ideaTitle={idea.title} />
+        <DeleteIdeaDialog idea={idea} />
 
         <div className="flex gap-4">
           <Link

@@ -10,40 +10,22 @@ import {
 } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
 import { DialogTrigger } from "@radix-ui/react-dialog";
-import { useState } from "react";
-import { toast } from "sonner";
+import { useActionState, useState } from "react";
 import { Trash2 } from "lucide-react";
+import { Idea } from "@/lib/supabase/types";
+import { deleteIdeaAction } from "@/lib/supabase/actions/idea/delete-idea-action";
 
-interface DeleteIdeaDialogProps {
-  ideaTitle: string;
+interface Props {
+  idea: Idea;
 }
 
-export function DeleteIdeaDialog({ ideaTitle }: DeleteIdeaDialogProps) {
-  //const router = useRouter();
+export function DeleteIdeaDialog({ idea }: Props) {
+  const action = deleteIdeaAction.bind(null, idea.id);
+  const [state, formAction, isPending] = useActionState(action, {
+    errorMessage: "",
+  });
   const [deleteDialogOpen, setDeleteDialogOpen] = useState(false);
-  const [isDeleting, setIsDeleting] = useState(false);
 
-  const handleDeleteIdea = async () => {
-    setIsDeleting(true);
-
-    try {
-      // In a real app, this would be an API call to delete the idea
-      // For now, we'll just simulate a delay
-      await new Promise((resolve) => setTimeout(resolve, 1000));
-
-      toast("Idea deleted", {
-        description: "Your idea has been successfully deleted",
-      });
-
-      // Redirect to the browse page
-      //router.push("/browse");
-    } catch (error) {
-      toast.error("Error", {
-        description: "Failed to delete idea. Please try again.",
-      });
-      setIsDeleting(false);
-    }
-  };
   return (
     <Dialog open={deleteDialogOpen} onOpenChange={setDeleteDialogOpen}>
       <DialogTrigger asChild>
@@ -56,21 +38,19 @@ export function DeleteIdeaDialog({ ideaTitle }: DeleteIdeaDialogProps) {
         <DialogHeader>
           <DialogTitle>Delete Idea</DialogTitle>
           <DialogDescription>
-            Are you sure you want to delete &quot;{ideaTitle}&quot;? This action
-            cannot be undone.
+            Are you sure you want to delete &quot;{idea.title}&quot;? This
+            action cannot be undone.
           </DialogDescription>
         </DialogHeader>
         <DialogFooter>
           <Button variant="outline" onClick={() => setDeleteDialogOpen(false)}>
             Cancel
           </Button>
-          <Button
-            variant="destructive"
-            onClick={handleDeleteIdea}
-            disabled={isDeleting}
-          >
-            {isDeleting ? "Deleting..." : "Delete idea"}
-          </Button>
+          <form action={formAction}>
+            <Button type="submit" variant="destructive" disabled={isPending}>
+              {isPending ? "Deleting..." : "Delete idea"}
+            </Button>
+          </form>
         </DialogFooter>
       </DialogContent>
     </Dialog>

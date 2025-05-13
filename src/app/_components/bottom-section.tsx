@@ -1,7 +1,9 @@
 import { buttonVariants } from "@/components/ui/button";
+import { getCurrentUser } from "@/lib/supabase/queries/auth/getCurrentUser";
 import Link from "next/link";
 
-export const BottomSection = () => {
+export const BottomSection = async () => {
+  const user = await getCurrentUser();
   return (
     <section className="bg-primary text-primary-foreground py-10">
       <div className="container mx-auto px-4 md:px-6">
@@ -12,12 +14,14 @@ export const BottomSection = () => {
             tech project ideas today.
           </p>
           <div className="flex flex-col gap-4 sm:flex-row">
-            <Link
-              href="/register"
-              className={buttonVariants({ variant: "secondary", size: "lg" })}
-            >
-              Sign Up
-            </Link>
+            {!user && (
+              <Link
+                href="/register"
+                className={buttonVariants({ variant: "secondary", size: "lg" })}
+              >
+                Sign Up
+              </Link>
+            )}
             <Link
               href="/browse"
               className={buttonVariants({

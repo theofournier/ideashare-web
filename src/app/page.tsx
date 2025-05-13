@@ -1,5 +1,3 @@
-"use client";
-
 import { HeroSection } from "./_components/hero-section";
 import { HowSection } from "./_components/how-section";
 import { BottomSection } from "./_components/bottom-section";

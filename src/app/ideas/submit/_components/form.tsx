@@ -28,7 +28,7 @@ import ReactMarkdown from "react-markdown";
 import remarkGfm from "remark-gfm";
 import { Prism as SyntaxHighlighter } from "react-syntax-highlighter";
 import { vscDarkPlus } from "react-syntax-highlighter/dist/cjs/styles/prism";
-import { submitIdea } from "@/lib/supabase/actions/idea/submitIdea";
+import { submitIdeaAction } from "@/lib/supabase/actions/idea/submit-idea-action";
 import Link from "next/link";
 import { MultiSelect } from "@/components/ui/multi-select";
 
@@ -52,7 +52,7 @@ const techStackOptions = [
 ];
 
 export default function SubmitIdeaForm() {
-  const [state, formAction, isPending] = useActionState(submitIdea, {
+  const [state, formAction, isPending] = useActionState(submitIdeaAction, {
     errorMessage: "",
   });
 
