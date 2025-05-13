@@ -1,5 +1,5 @@
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { IdeaCard } from "@/components/idea-card";
+import { IdeaCard } from "@/components/idea/idea-card";
 import { notFound } from "next/navigation";
 import { CircleUserRound } from "lucide-react";
 import { getProfile } from "@/lib/supabase/queries/profile/getProfile";

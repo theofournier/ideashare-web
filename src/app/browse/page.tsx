@@ -4,8 +4,8 @@ import { ideas as mockIdeas, tags } from "@/lib/mock-data";
 import { SideBar } from "./_components/side-bar";
 import { Button } from "@/components/ui/button";
 import { LayoutGrid, List } from "lucide-react";
-import { IdeaCard } from "@/components/idea-card";
-import { IdeaListItem } from "@/components/idea-list-item";
+import { IdeaCard } from "@/components/idea/idea-card";
+import { IdeaListItem } from "@/components/idea/idea-list-item";
 import {
   Pagination,
   PaginationContent,

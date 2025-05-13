@@ -1,12 +1,12 @@
 import { notFound } from "next/navigation";
 import Link from "next/link";
-import { ArrowLeft, ArrowUp, Flag, User, Edit } from "lucide-react";
-import { Button, buttonVariants } from "@/components/ui/button";
+import { ArrowLeft, Edit } from "lucide-react";
+import { buttonVariants } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Separator } from "@/components/ui/separator";
 import { ideas } from "@/lib/mock-data";
 import { ReportIdeaModal } from "@/app/ideas/[id]/_components/report-idea-modal";
-import { SimilarIdeas } from "@/components/similar-ideas";
+import { SimilarIdeas } from "@/components/idea/similar-ideas";
 import ReactMarkdown from "react-markdown";
 import remarkGfm from "remark-gfm";
 import { Prism as SyntaxHighlighter } from "react-syntax-highlighter";
@@ -14,6 +14,7 @@ import { vscDarkPlus } from "react-syntax-highlighter/dist/cjs/styles/prism";
 import { Card, CardContent } from "@/components/ui/card";
 import { NextPageProps } from "@/lib/type";
 import { getIdea } from "@/lib/supabase/queries/idea/getIdea";
+import { IdeaVoteButton } from "@/components/idea/idea-vote-button";
 
 export default async function IdeaDetailPage({
   params,
@@ -51,10 +52,7 @@ export default async function IdeaDetailPage({
               <Edit className="mr-2 h-4 w-4" />
               Edit
             </Link>
-            <Button variant={"outline"} className="w-full sm:w-auto">
-              <ArrowUp className="mr-2 h-4 w-4" />
-              Upvote ({idea.activity?.voteCount || 0})
-            </Button>
+            <IdeaVoteButton idea={idea} full />
             <ReportIdeaModal ideaId={id} ideaTitle={idea.title} />
           </div>
         </div>

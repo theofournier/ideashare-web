@@ -1,12 +1,16 @@
 import { createClient } from "../../clients/server";
-import { ideaMapping } from "../../supabaseMapping";
+import { ideaMapping, ideaVoteMapping } from "../../supabaseMapping";
+import { Idea, IdeaVote } from "../../types";
+import { getSupabaseUser } from "../auth/getSupabaseUser";
 
 type IdeaParams = {
   id: string;
 };
 
-export const getIdea = async (params: IdeaParams) => {
+export const getIdea = async (params: IdeaParams): Promise<Idea | null> => {
   const supabase = await createClient();
+
+  const user = await getSupabaseUser();
 
   try {
     const { data, error } = await supabase
@@ -21,13 +25,33 @@ export const getIdea = async (params: IdeaParams) => {
       console.error("Error fetching idea:", error);
       return null;
     }
-    return ideaMapping(
-      data,
-      data.profiles,
-      data.idea_tags,
-      data.idea_tech_stacks,
-      data.idea_activities
-    );
+
+    let viewerVote: IdeaVote | undefined = undefined;
+
+    if (user) {
+      const { data: voteData, error: voteError } = await supabase
+        .from("idea_votes")
+        .select("*")
+        .eq("user_id", user.id)
+        .eq("idea_id", params.id)
+        .single();
+
+      if (voteError) {
+        console.error("Error fetching idea votes:", voteError);
+      }
+      viewerVote = voteData ? ideaVoteMapping(voteData) : undefined;
+    }
+
+    return {
+      ...ideaMapping(
+        data,
+        data.profiles,
+        data.idea_tags,
+        data.idea_tech_stacks,
+        data.idea_activities
+      ),
+      viewerVote,
+    };
   } catch (error) {
     console.error("Error fetching idea:", error);
     return null;

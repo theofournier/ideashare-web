@@ -1,12 +1,12 @@
-import { getCurrentUser } from "@/lib/supabase/queries/auth/getCurrentUser";
 import SubmitIdeaForm from "./_components/form";
 import { Card, CardContent } from "@/components/ui/card";
 import { Lock, LogIn } from "lucide-react";
 import Link from "next/link";
 import { buttonVariants } from "@/components/ui/button";
+import { getSupabaseUser } from "@/lib/supabase/queries/auth/getSupabaseUser";
 
 export default async function SubmitIdeaPage() {
-  const user = await getCurrentUser();
+  const user = await getSupabaseUser();
 
   return (
     <div className="container mx-auto px-4 md:px-6 py-8">

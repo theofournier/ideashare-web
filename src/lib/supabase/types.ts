@@ -28,6 +28,7 @@ export type Idea = {
   tags: Tag[];
   techStacks: TechStack[];
   activity?: IdeaActivity;
+  viewerVote?: IdeaVote;
 };
 export type Tag = {
   id: number;
@@ -41,6 +42,11 @@ export type TechStack = {
 export type IdeaActivity = {
   voteCount: number;
   viewCount: number;
+};
+export type IdeaVote = {
+  ideaId: string;
+  userId: string;
+  createdAt: string;
 };
 
 export type ReportReason = Database["public"]["Enums"]["report_reason"];

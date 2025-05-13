@@ -3,17 +3,14 @@
 import Link from "next/link";
 import { Card, CardContent, CardFooter } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
-import { Button } from "@/components/ui/button";
-import { ArrowUp } from "lucide-react";
 import { Idea } from "@/lib/supabase/types";
+import { IdeaVoteButton } from "./idea-vote-button";
 
 interface IdeaCardProps {
   idea: Idea;
-  isUpvoted?: boolean;
-  onUpvote?: (id: string) => void;
 }
 
-export function IdeaCard({ idea, isUpvoted = false, onUpvote }: IdeaCardProps) {
+export function IdeaCard({ idea }: IdeaCardProps) {
   const tags = idea.tags;
 
   return (
@@ -60,15 +57,7 @@ export function IdeaCard({ idea, isUpvoted = false, onUpvote }: IdeaCardProps) {
           <span className="text-sm text-muted-foreground">
             {new Date(idea.createdAt).toLocaleDateString()}
           </span>
-          <Button
-            variant={isUpvoted ? "default" : "outline"}
-            size="sm"
-            onClick={() => onUpvote && onUpvote(idea.id)}
-            className="gap-1"
-          >
-            <ArrowUp className="h-4 w-4" />
-            <span>{idea.activity?.voteCount}</span>
-          </Button>
+          <IdeaVoteButton idea={idea} />
         </div>
       </CardFooter>
     </Card>

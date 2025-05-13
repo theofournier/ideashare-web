@@ -1,5 +1,5 @@
 import { Constants, Database } from "./database.types";
-import { Idea, IdeaActivity, Profile, Tag, TechStack } from "./types";
+import { Idea, IdeaActivity, IdeaVote, Profile, Tag, TechStack } from "./types";
 
 type SupabaseProfile = Database["public"]["Tables"]["profiles"]["Row"];
 type IdeaTag = Database["public"]["Tables"]["idea_tags"]["Row"] & {
@@ -44,6 +44,14 @@ export const ideaActivityMapping = (
 ): IdeaActivity => ({
   voteCount: activity.vote_count,
   viewCount: activity.view_count,
+});
+
+export const ideaVoteMapping = (
+  vote: Database["public"]["Tables"]["idea_votes"]["Row"]
+): IdeaVote => ({
+  ideaId: vote.idea_id,
+  userId: vote.user_id,
+  createdAt: vote.created_at,
 });
 
 export const tagMapping = (

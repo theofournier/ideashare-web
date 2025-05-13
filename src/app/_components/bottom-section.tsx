@@ -1,9 +1,9 @@
 import { buttonVariants } from "@/components/ui/button";
-import { getCurrentUser } from "@/lib/supabase/queries/auth/getCurrentUser";
+import { getSupabaseUser } from "@/lib/supabase/queries/auth/getSupabaseUser";
 import Link from "next/link";
 
 export const BottomSection = async () => {
-  const user = await getCurrentUser();
+  const user = await getSupabaseUser();
   return (
     <section className="bg-primary text-primary-foreground py-10">
       <div className="container mx-auto px-4 md:px-6">

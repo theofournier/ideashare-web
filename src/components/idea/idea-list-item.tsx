@@ -2,21 +2,15 @@
 
 import Link from "next/link";
 import { Badge } from "@/components/ui/badge";
-import { Button } from "@/components/ui/button";
-import { ArrowUp, Calendar } from "lucide-react";
+import { Calendar } from "lucide-react";
 import { Idea } from "@/lib/supabase/types";
+import { IdeaVoteButton } from "./idea-vote-button";
 
 interface IdeaListItemProps {
   idea: Idea;
-  isUpvoted?: boolean;
-  onUpvote?: (id: string) => void;
 }
 
-export function IdeaListItem({
-  idea,
-  isUpvoted = false,
-  onUpvote,
-}: IdeaListItemProps) {
+export function IdeaListItem({ idea }: IdeaListItemProps) {
   const tags = idea.tags;
 
   return (
@@ -70,15 +64,7 @@ export function IdeaListItem({
           <Calendar className="h-3 w-3 mr-1" />
           <span>{new Date(idea.createdAt).toLocaleDateString()}</span>
         </div>
-        <Button
-          variant={isUpvoted ? "default" : "outline"}
-          size="sm"
-          onClick={() => onUpvote && onUpvote(idea.id)}
-          className="gap-1"
-        >
-          <ArrowUp className="h-4 w-4" />
-          <span>{idea.activity?.voteCount}</span>
-        </Button>
+        <IdeaVoteButton idea={idea} />
       </div>
     </div>
   );
