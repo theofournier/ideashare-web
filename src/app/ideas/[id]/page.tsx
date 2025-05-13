@@ -5,7 +5,7 @@ import { buttonVariants } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Separator } from "@/components/ui/separator";
 import { ideas } from "@/lib/mock-data";
-import { ReportIdeaModal } from "@/app/ideas/[id]/_components/report-idea-modal";
+import { ReportIdeaDialog } from "./_components/report-idea-dialog";
 import { SimilarIdeas } from "@/components/idea/similar-ideas";
 import ReactMarkdown from "react-markdown";
 import remarkGfm from "remark-gfm";
@@ -53,7 +53,7 @@ export default async function IdeaDetailPage({
               Edit
             </Link>
             <IdeaVoteButton idea={idea} full />
-            <ReportIdeaModal ideaId={id} ideaTitle={idea.title} />
+            <ReportIdeaDialog idea={idea} />
           </div>
         </div>
       </div>
